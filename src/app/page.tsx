@@ -22,7 +22,7 @@ export default function Page() {
                 delay={BLUR_FADE_DELAY}
                 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
                 yOffset={8}
-                text={`Hi, I'm ${DATA.first_name}`}
+                text={`Hi, I&apos;m ${DATA.first_name}`}
               />
               <BlurFadeText
                 className="max-w-[600px] md:text-xl"
@@ -73,14 +73,14 @@ export default function Page() {
 
       <section id="photo-slideshow" class="slideshow-container">
         <div class="slideshow-track">
-          <div class="slide"><img src="/Slides/Robograf_ost_07-27-2023_0008 (2).JPG" alt="Slide 1" /></div>
-          <div class="slide"><img src="/Slides/1699914731406.jpeg" alt="Slide 2" /></div>
-          <div class="slide"><img src="/Slides/263463585_5067540496612999_6175899699427580007_n.jpg" alt="Slide 3" /></div>
-          <div class="slide"><img src="/Slides/272899300_1224929181367505_1869064406776830708_n.jpg" alt="Slide 4" /></div>
-          <div class="slide"><img src="/Slides/283608751_1723772474643176_8997501017855656483_n.jpg" alt="Slide 5" /></div>
-          <div class="slide"><img src="/Slides/285639964_3541363806090192_4099727266731152384_n.jpg" alt="Slide 6" /></div>
-          <div class="slide"><img src="/Slides/437473116_453584250537534_3567375388878140822_n.jpg" alt="Slide 7" /></div>
-          <div class="slide"><img src="/Slides/167A1223_0005_167A1204.png" alt="Slide 8" /></div>
+          <div class="slide"><Image src="/Slides/Robograf_ost_07-27-2023_0008 (2).JPG" alt="Slide 1" /></div>
+          <div class="slide"><Image src="/Slides/1699914731406.jpeg" alt="Slide 2" /></div>
+          <div class="slide"><Image src="/Slides/263463585_5067540496612999_6175899699427580007_n.jpg" alt="Slide 3" /></div>
+          <div class="slide"><Image src="/Slides/272899300_1224929181367505_1869064406776830708_n.jpg" alt="Slide 4" /></div>
+          <div class="slide"><Image src="/Slides/283608751_1723772474643176_8997501017855656483_n.jpg" alt="Slide 5" /></div>
+          <div class="slide"><Image src="/Slides/285639964_3541363806090192_4099727266731152384_n.jpg" alt="Slide 6" /></div>
+          <div class="slide"><Image src="/Slides/437473116_453584250537534_3567375388878140822_n.jpg" alt="Slide 7" /></div>
+          <div class="slide"><Image src="/Slides/167A1223_0005_167A1204.png" alt="Slide 8" /></div>
         </div>
       </section>
 
@@ -301,7 +301,7 @@ export default function Page() {
           <div class="slideshow-track">
             <div class="testimonial-card">
               <div class="avatar-container">
-                <img src="/Testimonials/Mahdi.jpeg" alt="Profile Image" class="avatar" />
+                <Image src="/Testimonials/Mahdi.jpeg" alt="Profile Image" class="avatar" />
                 <div>
                   <h3>Mahdi Zgolli</h3>
                   <p class="username">@Mahdi</p>
@@ -313,7 +313,7 @@ export default function Page() {
             </div>
             <div class="testimonial-card">
               <div class="avatar-container">
-                <img src="/Testimonials/Imem.jpg" alt="Profile Image" class="avatar" />
+                <Image src="/Testimonials/Imem.jpg" alt="Profile Image" class="avatar" />
                 <div>
                   <h3>Imem Hamdi</h3>
                   <p class="username">@imem</p>
@@ -325,7 +325,7 @@ export default function Page() {
             </div>
             <div class="testimonial-card">
               <div class="avatar-container">
-                <img src="/Testimonials/Manel.png" alt="Profile Image" class="avatar" />
+                <Image src="/Testimonials/Manel.png" alt="Profile Image" class="avatar" />
                 <div>
                   <h3>Manel Yatouji</h3>
                   <p class="username">@yousri</p>
@@ -337,7 +337,7 @@ export default function Page() {
             </div>
             <div class="testimonial-card">
               <div class="avatar-container">
-                <img src="/Testimonials/profile.jpg" alt="Profile Image" class="avatar" />
+                <Image src="/Testimonials/profile.jpg" alt="Profile Image" class="avatar" />
                 <div>
                   <h3>Hyba Ayesh</h3>
                   <p class="username">@Hyba</p>
@@ -350,7 +350,7 @@ export default function Page() {
 
             <div class="testimonial-card">
               <div class="avatar-container">
-                <img src="/Testimonials/Rafika.png" alt="Profile Image" class="avatar" />
+                <Image src="/Testimonials/Rafika.png" alt="Profile Image" class="avatar" />
                 <div>
                   <h3>Rafika Bel Hadj Alaya</h3>
                   <p class="username">@Rafika</p>
@@ -362,7 +362,7 @@ export default function Page() {
             </div>
             <div class="testimonial-card">
               <div class="avatar-container">
-                <img src="/Testimonials/Ala.jpeg" alt="Profile Image" class="avatar" />
+                <Image src="/Testimonials/Ala.jpeg" alt="Profile Image" class="avatar" />
                 <div>
                   <h3>Ala Eddine Largat</h3>
                   <p class="username">@Alaa</p>
@@ -389,7 +389,7 @@ export default function Page() {
           <div class="text-section">
             <h2 class="contact-title">Get in Touch</h2>
             <p class="contact-description">
-              I'm currently looking for new opportunities, my inbox is always open.
+              I&apos;m currently looking for new opportunities, my inbox is always open.
             </p>
             <p class="contact-email">
               <a href="mailto:mellah.mohamedali@outlook.com">mellah.mohamedali@outlook.com</a>
@@ -398,7 +398,7 @@ export default function Page() {
 
           <div class="map-container">
             <div class="map-wrapper">
-              <img src="/location.jpg" alt="Map of Tunis" class="map-image" />
+              <Image src="/location.jpg" alt="Map of Tunis" class="map-image" />
               <div class="tooltip-container">
                 <div class="phone-number">+216 95 092 609</div>
                 <div class="connecting-line"></div>
