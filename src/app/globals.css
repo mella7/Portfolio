@@ -67,6 +67,9 @@
   }
 
   @layer base {
+    .testimonial-card {
+      @apply flex flex-col items-center p-4 space-y-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center min-w-[250px];
+    }
     * {
       @apply border-border;
     }
@@ -142,3 +145,332 @@ code[data-line-numbers-max-digits="2"] > [data-line]::before {
 code[data-line-numbers-max-digits="3"] > [data-line]::before {
   width: 3rem;
 }
+
+
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+  transition: transform 0.3s ease-in-out; 
+  width: 100%;
+  white-space: nowrap;
+  display: flex;
+}
+
+
+/*
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  animation: marquee 16s linear infinite; /* Adjust timing as needed 
+  flex-shrink: 0;
+  width: 200%; /* calc(100% * ${DATA.testimonials.length}); 
+  /* Calculate width based on number of slides 
+  transition: transform 0.3s ease-in-out; /* Add smooth transition 
+}
+
+.group-hover\:pause:hover .animate-marquee {
+  animation-play-state: paused;
+}
+*/
+
+
+/* Slideshow Container */
+/* Slideshow Container */
+.slideshow-container {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  padding: 20px 0;
+  background: none; /* Removed background color */
+}
+
+/* Track for Sliding Animation */
+.slideshow-track {
+  display: flex;
+  gap: 20px;
+  width: calc(300px * 12); /* Width based on the number of items for smooth loop */
+  animation: scroll 40s linear infinite; /* Slowed down the animation to 40s */
+}
+
+.slideshow-container:hover .slideshow-track {
+  animation-play-state: paused; /* Pause the animation on hover */
+}
+
+/* Individual Testimonial Card Styling */
+.testimonial-card {
+  flex: 0 0 300px;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out;
+}
+
+.testimonial-card:hover {
+  transform: scale(1.05);
+}
+
+/* Avatar and Name Positioning */
+.avatar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.testimonial-card h3 {
+  font-size: 1em;
+  margin: 0;
+  color: #333;
+}
+
+.testimonial-card .username {
+  font-size: 0.9em;
+  color: #777;
+}
+
+.testimonial-card blockquote {
+  font-size: 0.9em;
+  color: #555;
+  font-style: italic;
+}
+
+/* Image Slide Styling */
+.slide img {
+  max-height: 300px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth, Continuous Scrolling Animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Scroll halfway for a seamless loop */
+  }
+}
+
+
+
+/* General Contact Section Styling */
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.text-section {
+  max-width: 400px;
+}
+
+.contact-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #111;
+}
+
+.contact-description {
+  font-style: italic;
+  color: #666;
+  margin: 10px 0;
+}
+
+.contact-email a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-style: italic;
+}
+
+.contact-email a:hover {
+  text-decoration: underline;
+}
+
+/* Map and Tooltip Styling */
+.map-container {
+  position: relative;
+  perspective: 800px;
+}
+
+.map-wrapper {
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+  overflow: hidden;
+}
+
+.map-wrapper:hover {
+  transform: rotateX(15deg) rotateY(-10deg);
+}
+
+.map-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Tooltip Styling */
+.tooltip-container {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.map-wrapper:hover .tooltip-container {
+  opacity: 1;
+  transform: translate(-50%, -40px);
+}
+
+.phone-number {
+  background-color: #333;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.connecting-line {
+  width: 2px;
+  height: 20px;
+  background-color: #00b4d8;
+  margin-right: 10px;
+  margin-left: -8px;
+}
+
+
+/* General Contact Section Styling */
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.contact-section h2 {
+  color: #111;
+}
+
+.contact-section a {
+  color: #3b82f6;
+}
+
+.contact-section a:hover {
+  text-decoration: underline;
+}
+
+/* Map Container with 3D rotation */
+.map-container {
+  perspective: 1000px;
+}
+
+.map-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.map-wrapper:hover {
+  transform: rotateX(15deg) rotateY(-10deg);
+}
+
+.map-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tooltip styling */
+.tooltip-container {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.map-wrapper:hover .tooltip-container {
+  opacity: 1;
+  transform: translate(-50%, -40px);
+}
+
+.phone-number {
+  background-color: #333;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.connecting-line {
+  width: 2px;
+  height: 20px;
+  background-color: #00b4d8;
+  margin-right: 10px;
+  margin-left: -8px;
+}
+
+

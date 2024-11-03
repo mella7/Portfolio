@@ -22,7 +22,7 @@ export default function Page() {
                 delay={BLUR_FADE_DELAY}
                 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
                 yOffset={8}
-                text={`Hi, I'm ${DATA.name.split(" ")[0]} 👋`}
+                text={`Hi, I'm ${DATA.first_name}`}
               />
               <BlurFadeText
                 className="max-w-[600px] md:text-xl"
@@ -32,13 +32,18 @@ export default function Page() {
             </div>
             <BlurFade delay={BLUR_FADE_DELAY}>
               <Avatar className="size-28 border">
-                <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
+                <AvatarImage alt={DATA.first_name} src={DATA.avatarUrl} />
                 <AvatarFallback>{DATA.initials}</AvatarFallback>
               </Avatar>
             </BlurFade>
           </div>
         </div>
       </section>
+
+      <section id="navbar">
+        
+      </section>
+
       <section id="about">
         <BlurFade delay={BLUR_FADE_DELAY * 3}>
           <h2 className="text-xl font-bold">About</h2>
@@ -49,6 +54,66 @@ export default function Page() {
           </Markdown>
         </BlurFade>
       </section>
+      
+
+      <section id="vision">
+        <BlurFade delay={BLUR_FADE_DELAY * 3}>
+          <h2 className="text-xl font-bold">vision</h2>
+        </BlurFade>
+        <BlurFade delay={BLUR_FADE_DELAY * 4}>
+          <Markdown className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
+            {DATA.vision}
+          </Markdown>
+        </BlurFade>
+      </section>
+
+
+
+
+
+      <section id="photo-slideshow" class="slideshow-container">
+        <div class="slideshow-track">
+          <div class="slide"><img src="/Slides/Robograf_ost_07-27-2023_0008 (2).JPG" alt="Slide 1" /></div>
+          <div class="slide"><img src="/Slides/1699914731406.jpeg" alt="Slide 2" /></div>
+          <div class="slide"><img src="/Slides/263463585_5067540496612999_6175899699427580007_n.jpg" alt="Slide 3" /></div>
+          <div class="slide"><img src="/Slides/272899300_1224929181367505_1869064406776830708_n.jpg" alt="Slide 4" /></div>
+          <div class="slide"><img src="/Slides/283608751_1723772474643176_8997501017855656483_n.jpg" alt="Slide 5" /></div>
+          <div class="slide"><img src="/Slides/285639964_3541363806090192_4099727266731152384_n.jpg" alt="Slide 6" /></div>
+          <div class="slide"><img src="/Slides/437473116_453584250537534_3567375388878140822_n.jpg" alt="Slide 7" /></div>
+          <div class="slide"><img src="/Slides/167A1223_0005_167A1204.png" alt="Slide 8" /></div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <section id="education">
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <BlurFade delay={BLUR_FADE_DELAY * 7}>
+            <h2 className="text-xl font-bold">Education</h2>
+          </BlurFade>
+          {DATA.education.map((education, id) => (
+            <BlurFade
+              key={education.school}
+              delay={BLUR_FADE_DELAY * 8 + id * 0.05}
+            >
+              <ResumeCard
+                key={education.school}
+                href={education.href}
+                logoUrl={education.logoUrl}
+                altText={education.school}
+                title={education.school}
+                subtitle={education.degree}
+                period={`${education.start} - ${education.end}`}
+              />
+            </BlurFade>
+          ))}
+        </div>
+      </section>
+
+
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
@@ -74,36 +139,16 @@ export default function Page() {
           ))}
         </div>
       </section>
-      <section id="education">
-        <div className="flex min-h-0 flex-col gap-y-3">
-          <BlurFade delay={BLUR_FADE_DELAY * 7}>
-            <h2 className="text-xl font-bold">Education</h2>
-          </BlurFade>
-          {DATA.education.map((education, id) => (
-            <BlurFade
-              key={education.school}
-              delay={BLUR_FADE_DELAY * 8 + id * 0.05}
-            >
-              <ResumeCard
-                key={education.school}
-                href={education.href}
-                logoUrl={education.logoUrl}
-                altText={education.school}
-                title={education.school}
-                subtitle={education.degree}
-                period={`${education.start} - ${education.end}`}
-              />
-            </BlurFade>
-          ))}
-        </div>
-      </section>
-      <section id="skills">
+
+
+      <h2 className="text-xl font-bold">Skills</h2>
+      <section id="skills1">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
-            <h2 className="text-xl font-bold">Skills</h2>
+            <h4 className="text-xl">• Infrastructure & Cloud: </h4>
           </BlurFade>
           <div className="flex flex-wrap gap-1">
-            {DATA.skills.map((skill, id) => (
+            {DATA.skills1.map((skill, id) => (
               <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
                 <Badge key={skill}>{skill}</Badge>
               </BlurFade>
@@ -111,6 +156,97 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+      <section id="skills2">
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <BlurFade delay={BLUR_FADE_DELAY * 9}>
+            <h4 className="text-xl">• DevOps & Automation:</h4>
+          </BlurFade>
+          <div className="flex flex-wrap gap-1">
+            {DATA.skills2.map((skill, id) => (
+              <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
+                <Badge key={skill}>{skill}</Badge>
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="skills3">
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <BlurFade delay={BLUR_FADE_DELAY * 9}>
+            <h4 className="text-xl">• Monitoring & Logging:</h4>
+          </BlurFade>
+          <div className="flex flex-wrap gap-1">
+            {DATA.skills3.map((skill, id) => (
+              <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
+                <Badge key={skill}>{skill}</Badge>
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="skills4">
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <BlurFade delay={BLUR_FADE_DELAY * 9}>
+            <h4 className="text-xl">• Security & Compliance:</h4>
+          </BlurFade>
+          <div className="flex flex-wrap gap-1">
+            {DATA.skills4.map((skill, id) => (
+              <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
+                <Badge key={skill}>{skill}</Badge>
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="skills5">
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <BlurFade delay={BLUR_FADE_DELAY * 9}>
+            <h4 className="text-xl">• Networking: </h4>
+          </BlurFade>
+          <div className="flex flex-wrap gap-1">
+            {DATA.skills5.map((skill, id) => (
+              <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
+                <Badge key={skill}>{skill}</Badge>
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="skills6">
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <BlurFade delay={BLUR_FADE_DELAY * 9}>
+            <h4 className="text-xl">• Documentation & Reporting:</h4>
+          </BlurFade>
+          <div className="flex flex-wrap gap-1">
+            {DATA.skills6.map((skill, id) => (
+              <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
+                <Badge key={skill}>{skill}</Badge>
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="skills7">
+        <div className="flex min-h-0 flex-col gap-y-3">
+          <BlurFade delay={BLUR_FADE_DELAY * 9}>
+            <h4 className="text-xl">• Languages & Scripting:</h4>
+          </BlurFade>
+          <div className="flex flex-wrap gap-1">
+            {DATA.skills7.map((skill, id) => (
+              <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
+                <Badge key={skill}>{skill}</Badge>
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="projects">
         <div className="space-y-12 w-full py-12">
           <BlurFade delay={BLUR_FADE_DELAY * 11}>
@@ -123,9 +259,7 @@ export default function Page() {
                   Check out my latest work
                 </h2>
                 <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  I&apos;ve worked on a variety of projects, from simple
-                  websites to complex web applications. Here are a few of my
-                  favorites.
+                  Here&apos;s a look at some of my favorite projects in cybersecurity, cloud, and DevSecOps. I’ve worked on everything from secure automation to cloud architecture and threat detection. Check them out!
                 </p>
               </div>
             </div>
@@ -152,74 +286,135 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <section id="hackathons">
-        <div className="space-y-12 w-full py-12">
-          <BlurFade delay={BLUR_FADE_DELAY * 13}>
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                  Hackathons
+      
+
+
+ 
+
+
+
+
+
+      <section id="testimonials" class="my-10">
+        <h2 class="text-xl font-bold text-center mb-4">What People Say</h2>
+        <div class="slideshow-container">
+          <div class="slideshow-track">
+            <div class="testimonial-card">
+              <div class="avatar-container">
+                <img src="/Testimonials/Mahdi.jpeg" alt="Profile Image" class="avatar" />
+                <div>
+                  <h3>Mahdi Zgolli</h3>
+                  <p class="username">@Mahdi</p>
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  I like building things
-                </h2>
-                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  During my time in university, I attended{" "}
-                  {DATA.hackathons.length}+ hackathons. People from around the
-                  country would come together and build incredible things in 2-3
-                  days. It was eye-opening to see the endless possibilities
-                  brought to life by a group of motivated and passionate
-                  individuals.
-                </p>
               </div>
+              <blockquote>
+                “Working with Dali was fantastic! He quickly solved a major issue during a project, saving us a lot of time. His energy is truly IMPRESSIVE.”
+              </blockquote>
             </div>
-          </BlurFade>
-          <BlurFade delay={BLUR_FADE_DELAY * 14}>
-            <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
-              {DATA.hackathons.map((project, id) => (
-                <BlurFade
-                  key={project.title + project.dates}
-                  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
-                >
-                  <HackathonCard
-                    title={project.title}
-                    description={project.description}
-                    location={project.location}
-                    dates={project.dates}
-                    image={project.image}
-                    links={project.links}
-                  />
-                </BlurFade>
-              ))}
-            </ul>
-          </BlurFade>
+            <div class="testimonial-card">
+              <div class="avatar-container">
+                <img src="/Testimonials/Imem.jpg" alt="Profile Image" class="avatar" />
+                <div>
+                  <h3>Imem Hamdi</h3>
+                  <p class="username">@imem</p>
+                </div>
+              </div>
+              <blockquote>
+                “During a hackathon, Mohamed Ali turned a challenging idea into a winning project in no time. He’s not only brilliant but also makes work enjoyable. Much Love!”
+              </blockquote>
+            </div>
+            <div class="testimonial-card">
+              <div class="avatar-container">
+                <img src="/Testimonials/Manel.png" alt="Profile Image" class="avatar" />
+                <div>
+                  <h3>Manel Yatouji</h3>
+                  <p class="username">@yousri</p>
+                </div>
+              </div>
+              <blockquote>
+                “I loved working with Med Ali, he brings a lot of enthusiasm and skill to the table.”
+              </blockquote>
+            </div>
+            <div class="testimonial-card">
+              <div class="avatar-container">
+                <img src="/Testimonials/profile.jpg" alt="Profile Image" class="avatar" />
+                <div>
+                  <h3>Hyba Ayesh</h3>
+                  <p class="username">@Hyba</p>
+                </div>
+              </div>
+              <blockquote>
+                “Love the creativity, true team player.”
+              </blockquote>
+            </div>
+
+            <div class="testimonial-card">
+              <div class="avatar-container">
+                <img src="/Testimonials/Rafika.png" alt="Profile Image" class="avatar" />
+                <div>
+                  <h3>Rafika Bel Hadj Alaya</h3>
+                  <p class="username">@Rafika</p>
+                </div>
+              </div>
+              <blockquote>
+                “He’s not only talented but also a great person to work with.”
+              </blockquote>
+            </div>
+            <div class="testimonial-card">
+              <div class="avatar-container">
+                <img src="/Testimonials/Ala.jpeg" alt="Profile Image" class="avatar" />
+                <div>
+                  <h3>Ala Eddine Largat</h3>
+                  <p class="username">@Alaa</p>
+                </div>
+              </div>
+              <blockquote>
+                “Very impressive work, big thanks for the hard work during our last project.”
+              </blockquote>
+            </div>
+          </div>
         </div>
       </section>
-      <section id="contact">
-        <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6 w-full py-12">
-          <BlurFade delay={BLUR_FADE_DELAY * 16}>
-            <div className="space-y-3">
-              <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                Contact
+
+
+
+
+
+
+
+
+
+      <section id="contact" class="contact-section">
+        <div class="contact-container">
+          <div class="text-section">
+            <h2 class="contact-title">Get in Touch</h2>
+            <p class="contact-description">
+              I'm currently looking for new opportunities, my inbox is always open.
+            </p>
+            <p class="contact-email">
+              <a href="mailto:mellah.mohamedali@outlook.com">mellah.mohamedali@outlook.com</a>
+            </p>
+          </div>
+
+          <div class="map-container">
+            <div class="map-wrapper">
+              <img src="/location.jpg" alt="Map of Tunis" class="map-image" />
+              <div class="tooltip-container">
+                <div class="phone-number">+216 95 092 609</div>
+                <div class="connecting-line"></div>
               </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                Get in Touch
-              </h2>
-              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Want to chat? Just shoot me a dm{" "}
-                <Link
-                  href={DATA.contact.social.X.url}
-                  className="text-blue-500 hover:underline"
-                >
-                  with a direct question on twitter
-                </Link>{" "}
-                and I&apos;ll respond whenever I can. I will ignore all
-                soliciting.
-              </p>
             </div>
-          </BlurFade>
+          </div>
+          
         </div>
       </section>
+
+
+
+
+
+
     </main>
   );
 }
+
