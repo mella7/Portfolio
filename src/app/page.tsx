@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/data/resume";
 import Link from "next/link";
 import Markdown from "react-markdown";
+import Image from 'next/image';
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -22,7 +23,7 @@ export default function Page() {
                 delay={BLUR_FADE_DELAY}
                 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
                 yOffset={8}
-                text={`Hi, I&apos;m ${DATA.first_name}`}
+                text={`Hi, I'm ${DATA.first_name}`}
               />
               <BlurFadeText
                 className="max-w-[600px] md:text-xl"
@@ -70,19 +71,37 @@ export default function Page() {
 
 
 
-
-      <section id="photo-slideshow" class="slideshow-container">
-        <div class="slideshow-track">
-          <div class="slide"><Image src="/Slides/Robograf_ost_07-27-2023_0008 (2).JPG" alt="Slide 1" /></div>
-          <div class="slide"><Image src="/Slides/1699914731406.jpeg" alt="Slide 2" /></div>
-          <div class="slide"><Image src="/Slides/263463585_5067540496612999_6175899699427580007_n.jpg" alt="Slide 3" /></div>
-          <div class="slide"><Image src="/Slides/272899300_1224929181367505_1869064406776830708_n.jpg" alt="Slide 4" /></div>
-          <div class="slide"><Image src="/Slides/283608751_1723772474643176_8997501017855656483_n.jpg" alt="Slide 5" /></div>
-          <div class="slide"><Image src="/Slides/285639964_3541363806090192_4099727266731152384_n.jpg" alt="Slide 6" /></div>
-          <div class="slide"><Image src="/Slides/437473116_453584250537534_3567375388878140822_n.jpg" alt="Slide 7" /></div>
-          <div class="slide"><Image src="/Slides/167A1223_0005_167A1204.png" alt="Slide 8" /></div>
+      <section id="photo-slideshow" className="slideshow-container">
+        <div className="slideshow-track">
+          {[ 
+            { src: "/Slides/Robograf_ost_07-27-2023_0008 (2).JPG", alt: "Slide 9" },
+            { src: "/Slides/IMG_2244.jpg", alt: "Slide 8" },
+            { src: "/Slides/1699914731406.jpeg", alt: "Slide 2" },
+            { src: "/Slides/285639964_3541363806090192_4099727266731152384_n.jpg", alt: "Slide 6" },
+            { src: "/Slides/437473116_453584250537534_3567375388878140822_n.jpg", alt: "Slide 7" },
+            { src: "/Slides/263463585_5067540496612999_6175899699427580007_n.jpg", alt: "Slide 3" },
+            { src: "/Slides/272899300_1224929181367505_1869064406776830708_n.jpg", alt: "Slide 4" },
+            { src: "/Slides/167A1223_0005_167A1204.png", alt: "Slide 1" },
+            { src: "/Slides/283608751_1723772474643176_8997501017855656483_n.jpg", alt: "Slide 5" },
+          ].map((slide, index) => (
+            <BlurFade key={slide.alt} delay={BLUR_FADE_DELAY * (index + 1)}>
+              <div className="slide">
+                <Image 
+                  src={slide.src} 
+                  alt={slide.alt} 
+                  width={2400} 
+                  height={2000} 
+                  style={{ objectFit: 'contain', width: '100%', height: 'auto' }} 
+                />
+              </div>
+            </BlurFade>
+          ))}
+          <div style={{ width: '1900px' }}></div>
         </div>
       </section>
+
+
+
 
 
 
@@ -133,7 +152,7 @@ export default function Page() {
                 href={work.href}
                 badges={work.badges}
                 period={`${work.start} - ${work.end ?? "Present"}`}
-                description={work.description}
+                descrip={work.descrip}
               />
             </BlurFade>
           ))}
@@ -295,52 +314,56 @@ export default function Page() {
 
 
 
-      <section id="testimonials" class="my-10">
-        <h2 class="text-xl font-bold text-center mb-4">What People Say</h2>
-        <div class="slideshow-container">
-          <div class="slideshow-track">
-            <div class="testimonial-card">
-              <div class="avatar-container">
-                <Image src="/Testimonials/Mahdi.jpeg" alt="Profile Image" class="avatar" />
+      <section id="testimonials" className="my-10">
+        <h2 className="text-xl font-bold text-center mb-4">What People Say</h2>
+        <div className="slideshow-container">
+          <div className="slideshow-track">
+            
+            <div className="testimonial-card" style={{ '--i': 1 }}>
+              <div className="avatar-container">
+                <Image src="/Testimonials/Mahdi.jpeg" alt="Profile Image" className="avatar" width={100} height={100} />
                 <div>
                   <h3>Mahdi Zgolli</h3>
-                  <p class="username">@Mahdi</p>
+                  <p className="username">@Mahdi</p>
                 </div>
               </div>
               <blockquote>
                 “Working with Dali was fantastic! He quickly solved a major issue during a project, saving us a lot of time. His energy is truly IMPRESSIVE.”
               </blockquote>
             </div>
-            <div class="testimonial-card">
-              <div class="avatar-container">
-                <Image src="/Testimonials/Imem.jpg" alt="Profile Image" class="avatar" />
+
+            <div className="testimonial-card" style={{ '--i': 1 }}>
+              <div className="avatar-container">
+                <Image src="/Testimonials/Imem.jpg" alt="Profile Image" className="avatar" width={100} height={100} />
                 <div>
                   <h3>Imem Hamdi</h3>
-                  <p class="username">@imem</p>
+                  <p className="username">@imem</p>
                 </div>
               </div>
               <blockquote>
                 “During a hackathon, Mohamed Ali turned a challenging idea into a winning project in no time. He’s not only brilliant but also makes work enjoyable. Much Love!”
               </blockquote>
             </div>
-            <div class="testimonial-card">
-              <div class="avatar-container">
-                <Image src="/Testimonials/Manel.png" alt="Profile Image" class="avatar" />
+
+            <div className="testimonial-card" style={{ '--i': 1 }}>
+              <div className="avatar-container">
+                <Image src="/Testimonials/Manel.png" alt="Profile Image" className="avatar" width={100} height={100} />
                 <div>
                   <h3>Manel Yatouji</h3>
-                  <p class="username">@yousri</p>
+                  <p className="username">@yousri</p>
                 </div>
               </div>
               <blockquote>
                 “I loved working with Med Ali, he brings a lot of enthusiasm and skill to the table.”
               </blockquote>
             </div>
-            <div class="testimonial-card">
-              <div class="avatar-container">
-                <Image src="/Testimonials/profile.jpg" alt="Profile Image" class="avatar" />
+
+            <div className="testimonial-card" style={{ '--i': 1 }}>
+              <div className="avatar-container">
+                <Image src="/Testimonials/profile.jpg" alt="Profile Image" className="avatar" width={100} height={100} />
                 <div>
                   <h3>Hyba Ayesh</h3>
-                  <p class="username">@Hyba</p>
+                  <p className="username">@Hyba</p>
                 </div>
               </div>
               <blockquote>
@@ -348,30 +371,32 @@ export default function Page() {
               </blockquote>
             </div>
 
-            <div class="testimonial-card">
-              <div class="avatar-container">
-                <Image src="/Testimonials/Rafika.png" alt="Profile Image" class="avatar" />
+            <div className="testimonial-card" style={{ '--i': 1 }}>
+              <div className="avatar-container">
+                <Image src="/Testimonials/Rafika.png" alt="Profile Image" className="avatar" width={100} height={100} />
                 <div>
                   <h3>Rafika Bel Hadj Alaya</h3>
-                  <p class="username">@Rafika</p>
+                  <p className="username">@Rafika</p>
                 </div>
               </div>
               <blockquote>
                 “He’s not only talented but also a great person to work with.”
               </blockquote>
             </div>
-            <div class="testimonial-card">
-              <div class="avatar-container">
-                <Image src="/Testimonials/Ala.jpeg" alt="Profile Image" class="avatar" />
+
+            <div className="testimonial-card" style={{ '--i': 1 }}>
+              <div className="avatar-container">
+                <Image src="/Testimonials/Ala.jpeg" alt="Profile Image" className="avatar" width={100} height={100} />
                 <div>
                   <h3>Ala Eddine Largat</h3>
-                  <p class="username">@Alaa</p>
+                  <p className="username">@Alaa</p>
                 </div>
               </div>
               <blockquote>
                 “Very impressive work, big thanks for the hard work during our last project.”
               </blockquote>
             </div>
+            
           </div>
         </div>
       </section>
@@ -384,24 +409,24 @@ export default function Page() {
 
 
 
-      <section id="contact" class="contact-section">
-        <div class="contact-container">
-          <div class="text-section">
-            <h2 class="contact-title">Get in Touch</h2>
-            <p class="contact-description">
+      <section id="contact" className="contact-section">
+        <div className="contact-container">
+          <div className="text-section">
+            <h2 className="contact-title">Get in Touch</h2>
+            <p className="contact-description">
               I&apos;m currently looking for new opportunities, my inbox is always open.
             </p>
-            <p class="contact-email">
+            <p className="contact-email">
               <a href="mailto:mellah.mohamedali@outlook.com">mellah.mohamedali@outlook.com</a>
             </p>
           </div>
 
-          <div class="map-container">
-            <div class="map-wrapper">
-              <Image src="/location.jpg" alt="Map of Tunis" class="map-image" />
-              <div class="tooltip-container">
-                <div class="phone-number">+216 95 092 609</div>
-                <div class="connecting-line"></div>
+          <div className="map-container">
+            <div className="map-wrapper">
+              <Image src="/location.jpg" alt="Map of Tunis" className="map-image" width={100} height={100} />
+              <div className="tooltip-container">
+                <div className="phone-number">+216 95 092 609</div>
+                <div className="connecting-line"></div>
               </div>
             </div>
           </div>

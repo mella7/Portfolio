@@ -193,12 +193,17 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 
 /* Slideshow Container */
 /* Slideshow Container */
+
+
+
 .slideshow-container {
   overflow: hidden;
   width: 100%;
+  max-width: 2400px; /* Set a max width if needed */
+  overflow: hidden;
+  margin: auto;
   position: relative;
   padding: 20px 0;
-  background: none; /* Removed background color */
 }
 
 /* Track for Sliding Animation */
@@ -472,5 +477,10 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   margin-right: 10px;
   margin-left: -8px;
 }
+
+
+
+
+
 
 

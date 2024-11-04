@@ -164,7 +164,7 @@ export const DATA = {
       logoUrl: "/Freelance.png",
       start: "2022",
       end: "Present",
-      description: [
+      descrip: [
         "• As a freelancer over the past 2.5 years, I’ve contributed to various DevOps, cloud, security, and networking projects, while also specializing in writing reports and creating presentations.",
         "• Responsibilities and Tasks Accomplished:",
         "> Implement Continuous Integration and Continuous Deployment (CI/CD) pipeline.",
