@@ -152,7 +152,7 @@ export default function Page() {
                 href={work.href}
                 badges={work.badges}
                 period={`${work.start} - ${work.end ?? "Present"}`}
-                descrip={work.descrip}
+                description={work.description}
               />
             </BlurFade>
           ))}
@@ -315,93 +315,69 @@ export default function Page() {
 
 
       <section id="testimonials" className="my-10">
-        <h2 className="text-xl font-bold text-center mb-4">What People Say</h2>
-        <div className="slideshow-container">
-          <div className="slideshow-track">
-            
-            <div className="testimonial-card" style={{ '--i': 1 }}>
-              <div className="avatar-container">
-                <Image src="/Testimonials/Mahdi.jpeg" alt="Profile Image" className="avatar" width={100} height={100} />
-                <div>
-                  <h3>Mahdi Zgolli</h3>
-                  <p className="username">@Mahdi</p>
-                </div>
+  <h2 className="text-xl font-bold text-center mb-4">What People Say</h2>
+  <div className="slideshow-container">
+    <div className="slideshow-track">
+      {[
+        { 
+          src: "/Testimonials/Mahdi.jpeg", 
+          name: "Mahdi Zgolli", 
+          username: "@Mahdi", 
+          testimonial: "Working with Dali was fantastic! He quickly solved a major issue during a project, saving us a lot of time. His energy is truly IMPRESSIVE." 
+        },
+        { 
+          src: "/Testimonials/Imem.jpg", 
+          name: "Imem Hamdi", 
+          username: "@imem", 
+          testimonial: "During a hackathon, Mohamed Ali turned a challenging idea into a winning project in no time. He’s not only brilliant but also makes work enjoyable. Much Love!" 
+        },
+        { 
+          src: "/Testimonials/Manel.png", 
+          name: "Manel Yatouji", 
+          username: "@yousri", 
+          testimonial: "I loved working with Med Ali, he brings a lot of enthusiasm and skill to the table." 
+        },
+        { 
+          src: "/Testimonials/profile.jpg", 
+          name: "Hyba Ayesh", 
+          username: "@Hyba", 
+          testimonial: "Love the creativity, true team player." 
+        },
+        { 
+          src: "/Testimonials/Rafika.png", 
+          name: "Rafika Bel Hadj Alaya", 
+          username: "@Rafika", 
+          testimonial: "He’s not only talented but also a great person to work with." 
+        },
+        { 
+          src: "/Testimonials/Ala.jpeg", 
+          name: "Ala Eddine Largat", 
+          username: "@Alaa", 
+          testimonial: "Very impressive work, big thanks for the hard work during our last project." 
+        },
+      ].map((testimonial, index) => (
+        <BlurFade key={testimonial.name} delay={BLUR_FADE_DELAY * (index + 1)}>
+          <div className="testimonial-card">
+            <div className="avatar-container">
+              <Image 
+                src={testimonial.src} 
+                alt={`Profile Image of ${testimonial.name}`} 
+                className="avatar" 
+                width={100} 
+                height={100} 
+              />
+              <div>
+                <h3>{testimonial.name}</h3>
+                <p className="username">{testimonial.username}</p>
               </div>
-              <blockquote>
-                “Working with Dali was fantastic! He quickly solved a major issue during a project, saving us a lot of time. His energy is truly IMPRESSIVE.”
-              </blockquote>
             </div>
-
-            <div className="testimonial-card" style={{ '--i': 1 }}>
-              <div className="avatar-container">
-                <Image src="/Testimonials/Imem.jpg" alt="Profile Image" className="avatar" width={100} height={100} />
-                <div>
-                  <h3>Imem Hamdi</h3>
-                  <p className="username">@imem</p>
-                </div>
-              </div>
-              <blockquote>
-                “During a hackathon, Mohamed Ali turned a challenging idea into a winning project in no time. He’s not only brilliant but also makes work enjoyable. Much Love!”
-              </blockquote>
-            </div>
-
-            <div className="testimonial-card" style={{ '--i': 1 }}>
-              <div className="avatar-container">
-                <Image src="/Testimonials/Manel.png" alt="Profile Image" className="avatar" width={100} height={100} />
-                <div>
-                  <h3>Manel Yatouji</h3>
-                  <p className="username">@yousri</p>
-                </div>
-              </div>
-              <blockquote>
-                “I loved working with Med Ali, he brings a lot of enthusiasm and skill to the table.”
-              </blockquote>
-            </div>
-
-            <div className="testimonial-card" style={{ '--i': 1 }}>
-              <div className="avatar-container">
-                <Image src="/Testimonials/profile.jpg" alt="Profile Image" className="avatar" width={100} height={100} />
-                <div>
-                  <h3>Hyba Ayesh</h3>
-                  <p className="username">@Hyba</p>
-                </div>
-              </div>
-              <blockquote>
-                “Love the creativity, true team player.”
-              </blockquote>
-            </div>
-
-            <div className="testimonial-card" style={{ '--i': 1 }}>
-              <div className="avatar-container">
-                <Image src="/Testimonials/Rafika.png" alt="Profile Image" className="avatar" width={100} height={100} />
-                <div>
-                  <h3>Rafika Bel Hadj Alaya</h3>
-                  <p className="username">@Rafika</p>
-                </div>
-              </div>
-              <blockquote>
-                “He’s not only talented but also a great person to work with.”
-              </blockquote>
-            </div>
-
-            <div className="testimonial-card" style={{ '--i': 1 }}>
-              <div className="avatar-container">
-                <Image src="/Testimonials/Ala.jpeg" alt="Profile Image" className="avatar" width={100} height={100} />
-                <div>
-                  <h3>Ala Eddine Largat</h3>
-                  <p className="username">@Alaa</p>
-                </div>
-              </div>
-              <blockquote>
-                “Very impressive work, big thanks for the hard work during our last project.”
-              </blockquote>
-            </div>
-            
+            <blockquote>{testimonial.testimonial}</blockquote>
           </div>
-        </div>
-      </section>
-
-
+        </BlurFade>
+      ))}
+    </div>
+  </div>
+</section>
 
 
 

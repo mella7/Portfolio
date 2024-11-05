@@ -2,6 +2,11 @@ import { Icons } from "@/components/icons";
 import { HomeIcon, NotebookIcon } from "lucide-react";
 
 export const DATA = {
+  name: "Mohamed Ali Mellah",
+  title: "DevSecOps Engineer / Junior Entrepreneur",
+  email: "mella.mellah@gmail.com",
+  phone: "+216 21 223 3456",
+  phoneLink: "https://www.google.com/search?q=+216+21+223+3456",
   first_name: "Mohamed Ali",
   last_name: "Mellah",
   initials: "DV",
@@ -164,7 +169,7 @@ export const DATA = {
       logoUrl: "/Freelance.png",
       start: "2022",
       end: "Present",
-      descrip: [
+      description: [
         "• As a freelancer over the past 2.5 years, I’ve contributed to various DevOps, cloud, security, and networking projects, while also specializing in writing reports and creating presentations.",
         "• Responsibilities and Tasks Accomplished:",
         "> Implement Continuous Integration and Continuous Deployment (CI/CD) pipeline.",
