@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { HomeIcon, NotebookIcon } from "lucide-react";
+import { HomeIcon, NotebookIcon, Quote } from "lucide-react";
 
 export const DATA = {
   name: "Mohamed Ali Mellah",
@@ -401,8 +401,7 @@ export const DATA = {
       username: "@Mahdi",
       imgSrc:
         "/public/Testimonials/Mahdi.jpeg",
-      quote:
-        "Working with Dali was fantastic! He quickly solved a major issue during a project, saving us a lot of time. His energy is truly IMPRESSIVE.",
+      quote: "Love the creativity, true team player.",
     },
     {
       name: "Imem Hamdi",
@@ -424,7 +423,8 @@ export const DATA = {
       username: "@Hyba",
       imgSrc:
         "https://media.licdn.com/dms/image/v2/D4D03AQFF8LBBXYqnQw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1715549520205?e=1729728000&amp;v=beta&amp;t=1q4Vbgo15sdGFE6E_FxNXyyg4V2h4SWMMV2hVLXG9q4",
-      quote: "Love the creativity, true team player.",
+      quote:
+        "Working with Dali was fantastic! He quickly solved a major issue during a project, saving us a lot of time. His energy is truly IMPRESSIVE.",
     },
     {
       name: "Ala Eddine Largat",
