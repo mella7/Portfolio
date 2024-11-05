@@ -317,13 +317,13 @@ export default function Page() {
       <section id="testimonials" className="my-10">
   <h2 className="text-xl font-bold text-center mb-4">What People Say</h2>
   <div className="slideshow-container">
-    <div className="slideshow-track">
+    <div className="slideshow-track" id="testimonialTrack" style={{ paddingLeft: "400px" }}>
       {[
         { 
           src: "/Testimonials/Mahdi.jpeg", 
           name: "Mahdi Zgolli", 
           username: "@Mahdi", 
-          testimonial: "Working with Dali was fantastic! He quickly solved a major issue during a project, saving us a lot of time. His energy is truly IMPRESSIVE." 
+          testimonial: "Love the creativity, true team player." 
         },
         { 
           src: "/Testimonials/Imem.jpg", 
@@ -341,7 +341,7 @@ export default function Page() {
           src: "/Testimonials/profile.jpg", 
           name: "Hyba Ayesh", 
           username: "@Hyba", 
-          testimonial: "Love the creativity, true team player." 
+          testimonial: "Working with Dali was fantastic! He quickly solved a major issue during a project, saving us a lot of time. His energy is truly IMPRESSIVE." 
         },
         { 
           src: "/Testimonials/Rafika.png", 
