@@ -83,47 +83,35 @@ export default function Page() {
 
 
 
-
       <section id="photo-slideshow" className="slideshow-container">
-  {/* Delay slideshow animation using state */}
-  {(() => {
-    const [startSlide, setStartSlide] = useState(false);
+        <div className="slideshow-track">
+          {[ 
+            { src: "/Slides/Robograf_ost_07-27-2023_0008 (2).JPG", alt: "Slide 9" },
+            { src: "/Slides/IMG_2244.jpg", alt: "Slide 8" },
+            { src: "/Slides/1699914731406.jpeg", alt: "Slide 2" },
+            { src: "/Slides/285639964_3541363806090192_4099727266731152384_n.jpg", alt: "Slide 6" },
+            { src: "/Slides/437473116_453584250537534_3567375388878140822_n.jpg", alt: "Slide 7" },
+            { src: "/Slides/263463585_5067540496612999_6175899699427580007_n.jpg", alt: "Slide 3" },
+            { src: "/Slides/272899300_1224929181367505_1869064406776830708_n.jpg", alt: "Slide 4" },
+            { src: "/Slides/167A1223_0005_167A1204.png", alt: "Slide 1" },
+            { src: "/Slides/283608751_1723772474643176_8997501017855656483_n.jpg", alt: "Slide 5" },
+          ].map((slide, index) => (
+            <BlurFade key={slide.alt} delay={BLUR_FADE_DELAY * (index + 1)}>
+              <div className="slide">
+                <Image 
+                  src={slide.src} 
+                  alt={slide.alt} 
+                  width={2400} 
+                  height={2000} 
+                  style={{ objectFit: 'contain', width: '100%', height: 'auto' }} 
+                />
+              </div>
+            </BlurFade>
+          ))}
+          <div style={{ width: '1900px' }}></div>
+        </div>
+      </section>
 
-    useEffect(() => {
-      const timeout = setTimeout(() => setStartSlide(true), 2000); // 2-second delay
-      return () => clearTimeout(timeout);
-    }, []);
-
-    return (
-      <div className={`slideshow-track ${startSlide ? "animate-marquee" : ""}`}>
-        {[
-          { src: "/Slides/Robograf_ost_07-27-2023_0008 (2).JPG", alt: "Slide 9" },
-          { src: "/Slides/IMG_2244.jpg", alt: "Slide 8" },
-          { src: "/Slides/1699914731406.jpeg", alt: "Slide 2" },
-          { src: "/Slides/285639964_3541363806090192_4099727266731152384_n.jpg", alt: "Slide 6" },
-          { src: "/Slides/437473116_453584250537534_3567375388878140822_n.jpg", alt: "Slide 7" },
-          { src: "/Slides/263463585_5067540496612999_6175899699427580007_n.jpg", alt: "Slide 3" },
-          { src: "/Slides/272899300_1224929181367505_1869064406776830708_n.jpg", alt: "Slide 4" },
-          { src: "/Slides/167A1223_0005_167A1204.png", alt: "Slide 1" },
-          { src: "/Slides/283608751_1723772474643176_8997501017855656483_n.jpg", alt: "Slide 5" },
-        ].map((slide, index) => (
-          <BlurFade key={slide.alt} delay={BLUR_FADE_DELAY * (index + 1)}>
-            <div className="slide">
-              <Image 
-                src={slide.src} 
-                alt={slide.alt} 
-                width={2400} 
-                height={2000} 
-                style={{ objectFit: 'contain', width: '100%', height: 'auto' }} 
-              />
-            </div>
-          </BlurFade>
-        ))}
-        <div style={{ width: '1900px' }}></div>
-      </div>
-    );
-  })()}
-</section>
 
 
 
