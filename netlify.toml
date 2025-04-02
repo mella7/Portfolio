@@ -1,6 +1,6 @@
 [build]
   command = "pnpm run build"
-  publish = "out"
+  publish = ".next"  # This is the correct output directory for Next.js with SSR
 
-[build.environment]
-  NODE_VERSION = "18"
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
