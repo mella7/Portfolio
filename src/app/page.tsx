@@ -1,3 +1,4 @@
+'use client';
 import { HackathonCard } from "@/components/hackathon-card";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
@@ -9,6 +10,7 @@ import { DATA } from "@/data/resume";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import Image from 'next/image';
+import { useEffect, useState } from "react";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -45,6 +47,17 @@ export default function Page() {
         
       </section>
 
+      <section className="w-full flex justify-center">
+        <a
+          href="https://drive.google.com/file/d/1U4lyXzi3JIV6i2Fn5MPEB_GNlsUqwkUU/view?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-black text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition"
+        >
+          View Full Resume
+        </a>
+      </section>
+
       <section id="about">
         <BlurFade delay={BLUR_FADE_DELAY * 3}>
           <h2 className="text-xl font-bold">About</h2>
@@ -72,33 +85,45 @@ export default function Page() {
 
 
       <section id="photo-slideshow" className="slideshow-container">
-        <div className="slideshow-track">
-          {[ 
-            { src: "/Slides/Robograf_ost_07-27-2023_0008 (2).JPG", alt: "Slide 9" },
-            { src: "/Slides/IMG_2244.jpg", alt: "Slide 8" },
-            { src: "/Slides/1699914731406.jpeg", alt: "Slide 2" },
-            { src: "/Slides/285639964_3541363806090192_4099727266731152384_n.jpg", alt: "Slide 6" },
-            { src: "/Slides/437473116_453584250537534_3567375388878140822_n.jpg", alt: "Slide 7" },
-            { src: "/Slides/263463585_5067540496612999_6175899699427580007_n.jpg", alt: "Slide 3" },
-            { src: "/Slides/272899300_1224929181367505_1869064406776830708_n.jpg", alt: "Slide 4" },
-            { src: "/Slides/167A1223_0005_167A1204.png", alt: "Slide 1" },
-            { src: "/Slides/283608751_1723772474643176_8997501017855656483_n.jpg", alt: "Slide 5" },
-          ].map((slide, index) => (
-            <BlurFade key={slide.alt} delay={BLUR_FADE_DELAY * (index + 1)}>
-              <div className="slide">
-                <Image 
-                  src={slide.src} 
-                  alt={slide.alt} 
-                  width={2400} 
-                  height={2000} 
-                  style={{ objectFit: 'contain', width: '100%', height: 'auto' }} 
-                />
-              </div>
-            </BlurFade>
-          ))}
-          <div style={{ width: '1900px' }}></div>
-        </div>
-      </section>
+  {/* Delay slideshow animation using state */}
+  {(() => {
+    const [startSlide, setStartSlide] = useState(false);
+
+    useEffect(() => {
+      const timeout = setTimeout(() => setStartSlide(true), 2000); // 2-second delay
+      return () => clearTimeout(timeout);
+    }, []);
+
+    return (
+      <div className={`slideshow-track ${startSlide ? "animate-marquee" : ""}`}>
+        {[
+          { src: "/Slides/Robograf_ost_07-27-2023_0008 (2).JPG", alt: "Slide 9" },
+          { src: "/Slides/IMG_2244.jpg", alt: "Slide 8" },
+          { src: "/Slides/1699914731406.jpeg", alt: "Slide 2" },
+          { src: "/Slides/285639964_3541363806090192_4099727266731152384_n.jpg", alt: "Slide 6" },
+          { src: "/Slides/437473116_453584250537534_3567375388878140822_n.jpg", alt: "Slide 7" },
+          { src: "/Slides/263463585_5067540496612999_6175899699427580007_n.jpg", alt: "Slide 3" },
+          { src: "/Slides/272899300_1224929181367505_1869064406776830708_n.jpg", alt: "Slide 4" },
+          { src: "/Slides/167A1223_0005_167A1204.png", alt: "Slide 1" },
+          { src: "/Slides/283608751_1723772474643176_8997501017855656483_n.jpg", alt: "Slide 5" },
+        ].map((slide, index) => (
+          <BlurFade key={slide.alt} delay={BLUR_FADE_DELAY * (index + 1)}>
+            <div className="slide">
+              <Image 
+                src={slide.src} 
+                alt={slide.alt} 
+                width={2400} 
+                height={2000} 
+                style={{ objectFit: 'contain', width: '100%', height: 'auto' }} 
+              />
+            </div>
+          </BlurFade>
+        ))}
+        <div style={{ width: '1900px' }}></div>
+      </div>
+    );
+  })()}
+</section>
 
 
 
@@ -262,6 +287,35 @@ export default function Page() {
                 <Badge key={skill}>{skill}</Badge>
               </BlurFade>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="certifications">
+        <div className="flex flex-col gap-y-4">
+          <BlurFade delay={BLUR_FADE_DELAY * 8}>
+            <h2 className="text-xl font-bold">Professional Certificates</h2>
+          </BlurFade>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
+            {DATA.certifications.map((cert, id) => {
+              const isDimmed =
+                cert.name.includes("CKS") || cert.name.includes("Kubestronaut");
+              return (
+                <BlurFade key={cert.name} delay={BLUR_FADE_DELAY * 9 + id * 0.05}>
+                  <div className="flex items-center gap-4">
+                    <Image
+                      src={cert.logo}
+                      alt={cert.name}
+                      width={48}
+                      height={48}
+                      className={`rounded ${isDimmed ? "opacity-50" : ""}`}
+                    />
+                    <span className="text-sm text-muted-foreground">{cert.name}</span>
+                  </div>
+                </BlurFade>
+              );
+            })}
           </div>
         </div>
       </section>
