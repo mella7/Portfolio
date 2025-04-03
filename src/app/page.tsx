@@ -298,7 +298,8 @@ export default function Page() {
                       height={48}
                       className={`rounded ${isDimmed ? "opacity-50" : ""}`}
                     />
-                    <span className="text-sm text-muted-foreground">{cert.name}</span>
+                    <span
+                     className="text-sm text-muted-foreground">{cert.name}</span>
                   </div>
                 </BlurFade>
               );

@@ -108,6 +108,7 @@ export const DATA = {
     "HCL",
   ], // Languages & Scripting
 
+
   navbar: [
     { href: "/", icon: HomeIcon, label: "Home" },
     //{ href: "/blog", icon: NotebookIcon, label: "Blog" },
