@@ -45,6 +45,17 @@ export default function Page() {
         
       </section>
 
+      <section className="w-full flex justify-center">
+        <a
+          href="https://drive.google.com/file/d/1U4lyXzi3JIV6i2Fn5MPEB_GNlsUqwkUU/view?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-black text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition"
+        >
+          View Full Resume
+        </a>
+      </section>
+
       <section id="about">
         <BlurFade delay={BLUR_FADE_DELAY * 3}>
           <h2 className="text-xl font-bold">About</h2>
@@ -57,16 +68,6 @@ export default function Page() {
       </section>
       
 
-      <section id="vision">
-        <BlurFade delay={BLUR_FADE_DELAY * 3}>
-          <h2 className="text-xl font-bold">vision</h2>
-        </BlurFade>
-        <BlurFade delay={BLUR_FADE_DELAY * 4}>
-          <Markdown className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
-            {DATA.vision}
-          </Markdown>
-        </BlurFade>
-      </section>
 
 
 
@@ -77,6 +78,7 @@ export default function Page() {
             { src: "/Slides/Robograf_ost_07-27-2023_0008 (2).JPG", alt: "Slide 9" },
             { src: "/Slides/IMG_2244.jpg", alt: "Slide 8" },
             { src: "/Slides/1699914731406.jpeg", alt: "Slide 2" },
+            { src: "/Slides/O6H4nycA.jpg", alt: "Slide 10" },
             { src: "/Slides/285639964_3541363806090192_4099727266731152384_n.jpg", alt: "Slide 6" },
             { src: "/Slides/437473116_453584250537534_3567375388878140822_n.jpg", alt: "Slide 7" },
             { src: "/Slides/263463585_5067540496612999_6175899699427580007_n.jpg", alt: "Slide 3" },
@@ -132,6 +134,35 @@ export default function Page() {
         </div>
       </section>
 
+      <section id="certifications">
+        <div className="flex flex-col gap-y-4">
+          <BlurFade delay={BLUR_FADE_DELAY * 8}>
+            <h2 className="text-xl font-bold">Professional Certificates</h2>
+          </BlurFade>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
+            {DATA.certifications.map((cert, id) => {
+              const isDimmed =
+                cert.name.includes("CKS") || cert.name.includes("Kubestronaut");
+              return (
+                <BlurFade key={cert.name} delay={BLUR_FADE_DELAY * 9 + id * 0.05}>
+                  <div className="flex items-center gap-4">
+                    <Image
+                      src={cert.logo}
+                      alt={cert.name}
+                      width={48}
+                      height={48}
+                      className={`rounded ${isDimmed ? "opacity-50" : ""}`}
+                    />
+                    <span
+                     className="text-sm text-muted-foreground">{cert.name}</span>
+                  </div>
+                </BlurFade>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-3">

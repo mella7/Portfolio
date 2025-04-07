@@ -140,7 +140,58 @@ export const DATA = {
     },
   },
 
+  certifications: [
+    {
+      name: "Red Hat Certified System Administrator (RHCSA)",
+      logo: "/certs/rhcsa.png",
+    },
+    {
+      name: "Certified Kubernetes Administrator (CKA)",
+      logo: "/certs/cka.png",
+    },
+    {
+      name: "Certified Kubernetes Application Developer (CKAD)",
+      logo: "/certs/ckad.png",
+    },
+    {
+      name: "AWS Certified Cloud Practitioner (AWS CCP)",
+      logo: "/certs/aws-ccp.png",
+    },
+    {
+      name: "eLearnSecurity Junior Penetration Tester (eJPT)",
+      logo: "/certs/ejpt.png",
+    },
+    {
+      name: "Cisco Network Security",
+      logo: "/certs/cisco-security.png",
+    },
+    {
+      name: "Cisco DevNet Associate",
+      logo: "/certs/devnet.png",
+    },
+    {
+      name: "Cisco Routing & Switching",
+      logo: "/certs/routing-switching.png",
+    },
+    {
+      name: "Certified Kubernetes Security Specialist (CKS) - In Progress",
+      logo: "/certs/cks.png",
+    },
+    {
+      name: "Next goal: Kubestronaut title (All 5 Kubernetes certs)",
+      logo: "/certs/kubestronaut.png",
+    },
+  ],
+
   education: [
+    {
+      school: "Hochschule Schmalkalden, Germany",
+      degree: "Exchange Program in Computer Science",
+      start: "2024",  
+      end: "2025",    
+      logoUrl: "/hsm.png", 
+      href: "https://www.hs-schmalkalden.de/",
+    },
     {
       school: "TEK-UP University • Part-Time Evening Program",
       href: "https://tek-up.de/",
