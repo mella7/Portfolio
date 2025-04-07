@@ -443,7 +443,20 @@ export const DATA = {
   ],
 
   hackathons: [
-
+    {
+      title: "AI4Africa Hackathon",
+      location: "Tunis, Tunisia",
+      dates: "March 2023",
+      image: "/Projects/ai4africa.png",
+      description: "Built an AI-powered chatbot to help local farmers...",
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/mella7/AI4Africa",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+    },
   ], // Make sure this array closes without a trailing comma
 
   testimonials: [
