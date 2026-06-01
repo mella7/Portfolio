@@ -1,0 +1,15 @@
+{
+  "name": "mam",
+  "version": "1.0.0",
+  "description": "AI chat CLI — text and images via your Hetzner relay",
+  "type": "module",
+  "bin": { "mam": "./src/mam.js" },
+  "scripts": { "start": "node src/mam.js" },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "conf": "^13.0.0",
+    "form-data": "^4.0.0",
+    "node-fetch": "^3.3.2",
+    "ora": "^8.0.1"
+  }
+}
