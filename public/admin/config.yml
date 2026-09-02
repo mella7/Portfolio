@@ -1,0 +1,122 @@
+# Decap CMS configuration - the admin panel at /admin reads this file.
+#
+# Auth model: GitHub backend. You log in at /admin with your GitHub account
+# (the repo owner), and every edit becomes a git commit on `main`, which
+# triggers a Netlify rebuild automatically (~1-2 min to go live).
+#
+# One-time setup (see README "Blog admin setup"):
+#   1. Update `repo:` below to your actual GitHub username/repo.
+#   2. In GitHub: Settings > Developer settings > OAuth Apps > New OAuth App
+#      - Homepage URL: https://mella7.me
+#      - Authorization callback URL: https://api.netlify.com/auth/done
+#   3. In Netlify: Site configuration > Access & security > OAuth >
+#      Install provider > GitHub, paste the Client ID and Secret.
+
+backend:
+  name: github
+  repo: mella7/Portfolio # TODO: change to your real username/repo-name
+  branch: main
+  base_url: https://api.netlify.com
+  # Nicer commit messages in your git history than the default.
+  commit_messages:
+    create: "blog: add {{slug}}"
+    update: "blog: update {{slug}}"
+    delete: "blog: remove {{slug}}"
+    uploadMedia: "blog: upload {{path}}"
+    deleteMedia: "blog: delete {{path}}"
+
+# Draft / In review / Ready columns in the admin UI. Lets you save a
+# half-written post without publishing it - Decap keeps it on a side branch
+# and only merges to `main` when you hit Publish.
+publish_mode: editorial_workflow
+
+# Lets you edit locally without auth: run `npx decap-server` in one terminal,
+# `npm run dev` in another, then open http://localhost:3000/admin
+local_backend: true
+
+media_folder: "public/blog/uploads" # where uploaded images are stored in the repo
+public_folder: "/blog/uploads" # how they are referenced in posts
+
+collections:
+  - name: "blog"
+    label: "Blog Posts"
+    label_singular: "Blog Post"
+    description: "Write and publish articles. Save as draft any time; hit Publish when ready."
+    folder: "content/blog"
+    create: true
+    slug: "{{slug}}"
+    # Filename gets the date prefix so posts stay chronological in the repo.
+    preview_path: "en/blog/{{slug}}"
+    # Controls the columns/sorting in the post list.
+    summary: "{{title}}  -  {{lang}}  -  {{publishedAt}}"
+    sortable_fields: ["publishedAt", "title"]
+    view_filters:
+      - label: "English"
+        field: lang
+        pattern: "en"
+      - label: "German"
+        field: lang
+        pattern: "de"
+      - label: "French"
+        field: lang
+        pattern: "fr"
+      - label: "Drafts only"
+        field: draft
+        pattern: true
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        hint: "Shows as the page heading and the browser tab title."
+
+      - label: "Publish Date"
+        name: "publishedAt"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        format: "YYYY-MM-DD"
+        time_format: false
+        default: ""
+        hint: "Set a future date to schedule the post - it stays hidden until then."
+
+      - label: "Summary"
+        name: "summary"
+        widget: "text"
+        hint: "1-2 sentences. Appears in the blog list and in Google results."
+
+      - label: "Language"
+        name: "lang"
+        widget: "select"
+        options: ["en", "de", "fr"]
+        default: "en"
+        hint: "Which language version of the site this post belongs to."
+
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        default: []
+        hint: "Optional. e.g. kubernetes, security, devops"
+
+      - label: "External URL"
+        name: "externalUrl"
+        widget: "string"
+        required: false
+        hint: "If the article lives on Medium or dev.to, paste the link here. The blog index will link straight out to it and no page is created on this site."
+
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "On = hidden from the live site, even after publishing to git."
+
+      - label: "Cover Image"
+        name: "image"
+        widget: "image"
+        required: false
+        hint: "Optional header image. Drag and drop works."
+
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        hint: "Use the toolbar for formatting, or paste markdown directly. Code blocks get syntax highlighting."
