@@ -97,7 +97,35 @@ Set `externalUrl` in a post's frontmatter (or the **External URL** field in the 
 
 `src/components/analytics.tsx` is wired up for [Umami](https://umami.is), which is cookie-free and collects no personal data, so **no cookie banner is required under GDPR**. It renders nothing until you configure it, so local development stays clean.
 
-To turn it on: create a free account at umami.is, add `mella7.me` as a website, then set `NEXT_PUBLIC_UMAMI_WEBSITE_ID` in Netlify under Site configuration > Environment variables. If you self-host Umami instead, also set `NEXT_PUBLIC_UMAMI_SRC` to your script URL.
+To turn it on: create a free account at umami.is, add `mella7.me` as a website, then set `NEXT_PUBLIC_UMAMI_WEBSITE_ID` in Netlify under Site configuration > Environment variables and redeploy. If you self-host Umami instead, also set `NEXT_PUBLIC_UMAMI_SRC` to your script URL.
+
+Tracking only runs on `mella7.me` and `www.mella7.me`, so deploy previews and localhost don't skew the numbers. Override with `NEXT_PUBLIC_UMAMI_DOMAINS` (comma-separated) if the domain changes.
+
+**What you see in the Umami dashboard:** visitors and page views per page, country / region / city, device, browser and OS, browser language, where people came from (LinkedIn, Google, a company's job portal...), and UTM campaigns. It does not tell you who a person is, and that is what keeps it GDPR-friendly.
+
+**Tracked links: `/qr/<name>` and `/go/<name>`**
+
+| Link | Use it for | Counted as |
+|---|---|---|
+| `mella7.me/qr` | the general QR code (CV, business card) | event `qr-scan` |
+| `mella7.me/qr/containerdays` | a QR code on a specific slide deck or poster | event `qr-scan`, name `containerdays` |
+| `mella7.me/go/vshn` | the link in your VSHN application | event `link-open`, name `vshn` |
+
+Each open is recorded server-side (so it counts even with an ad blocker) and then redirects to the visitor's language with `utm_source / utm_medium / utm_campaign` set, so you can also follow what they did on the site. Bots and link previews from chat apps are not counted. Any lowercase name works without a code change. To send a name to a specific page instead of the homepage, add it to `src/data/short-links.ts` - you can change that later without reprinting the QR code.
+
+Using one `/go/<company>` link per application tells you when that company opened your site and what they looked at.
+
+**Events** (Umami > Events), recorded by `src/components/analytics-events.tsx`:
+
+| Event | When |
+|---|---|
+| `resume-download` (`lang`) | a resume PDF is opened, from the buttons or the terminal |
+| `linkedin-click`, `github-click` (`page`) | someone goes to your LinkedIn or GitHub |
+| `email-click` | a `mailto:` link is clicked |
+| `outbound-click` (`host`, `page`) | any other external link |
+| `pdf-open` (`file`) | any other PDF, e.g. slides |
+| `contact-form-sent` | the contact form is sent successfully |
+| `terminal-command` (`command`) | a terminal command is run (only known command names, never free text) |
 
 Netlify Analytics is another option: server-side, nothing to install, no script in the page, but it costs about 9 USD a month per site.
 
@@ -195,7 +223,7 @@ Each entry in the `talks` array of `src/data/{en,de,fr}.tsx` accepts three optio
 - [ ] `public/admin/config.yml` - set your real `repo:` and do the OAuth setup above.
 
 - [ ] Add your ContainerDays slide deck to `public/talks/slides/` and set `slidesUrl` on that talk.
-- [ ] Turn on analytics: set `NEXT_PUBLIC_UMAMI_WEBSITE_ID` in Netlify.
+- [ ] Turn on analytics: set `NEXT_PUBLIC_UMAMI_WEBSITE_ID` in Netlify. Until then `/qr` and `/go` links still redirect correctly, they just aren't counted.
 - [ ] Add the official Cloud Identity Summit event URL in `src/data/{en,de,fr}.tsx` -> `talks`.
 
 ## Docker / Kubernetes

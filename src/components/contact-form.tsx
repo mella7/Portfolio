@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { track } from "@/lib/track";
 import { useState, type FormEvent } from "react";
 import { Loader2Icon, SendIcon } from "lucide-react";
 
@@ -52,6 +53,7 @@ export function ContactForm({
       });
       if (res.ok) {
         setStatus("success");
+        track("contact-form-sent");
         form.reset();
       } else {
         setStatus("error");

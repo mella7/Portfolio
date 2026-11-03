@@ -1,6 +1,7 @@
 "use client";
 
 import type { ResumeData } from "@/data/types";
+import { track } from "@/lib/track";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // An interactive shell on the homepage. Visitors can explore the CV by typing
@@ -73,7 +74,7 @@ export function Terminal({
         ]),
     },
     talks: {
-      desc: "upcoming conference talks",
+      desc: "conference talks",
       run: () =>
         data.talks.flatMap((t) => [
           `${t.event} - ${t.location} (${t.date})`,
@@ -103,6 +104,7 @@ export function Terminal({
       desc: "open my resume (PDF)",
       run: () => {
         if (typeof window !== "undefined") {
+          track("resume-download", { lang: "en", from: "terminal" });
           window.open("/resume/Resume_Mohamed_Ali_Mellah_EN.pdf", "_blank");
         }
         return ["Opening resume in a new tab..."];
@@ -182,6 +184,12 @@ export function Terminal({
 
     // Match on the first word so `kubectl get pods` still resolves.
     const name = trimmed.split(/\s+/)[0].toLowerCase();
+
+    // Only the command name is recorded, and only for real commands, so
+    // nothing a visitor freely types ever leaves their browser.
+    if (Object.prototype.hasOwnProperty.call(commands, name)) {
+      track("terminal-command", { command: name });
+    }
 
     if (name === "clear") {
       setLines([]);

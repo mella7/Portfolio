@@ -341,17 +341,31 @@ export const en: ResumeData = {
 
   talks: [
     {
+      slug: "cloud-identity-summit-2026-cicd",
+      event: "Cloud Identity Summit 2026",
+      date: "3 Nov 2026",
+      location: "Frankfurt, Germany",
+      talkTitle: "Your CI/CD Pipeline Is Over-Privileged: Identity Risks in Modern Cloud Platforms",
+      description:
+        "Pipeline identities hold some of the most access in a company and get the least governance. How they get compromised, how to audit them with five questions, and how to fix them with controls you already own.",
+      abstract:
+        "Most organizations put serious work into human identity: MFA, Conditional Access, PIM, access reviews. The pipeline that deploys to production usually gets none of it. It runs on a service principal with Owner rights, a client secret nobody has rotated, and sometimes a developer's personal token doing a machine's job. Attackers know this, and leaked secrets tend to stay valid for years.\n\nThe talk has six parts. First, why attackers go after pipelines, with current numbers on non-human identity breaches and leaked secrets. Second, why identity programs built for people lose track of machines: there is no HR system that tells you who owns a deploy identity or when it should be removed. Third, a deep dive into what goes wrong, starting from the two questions every pipeline identity has (which workflow may get credentials, and what it can do with them), then static secrets, broad service accounts and unrestricted workflows, and how one ordinary pipeline hits most of the OWASP Non-Human Identities Top 10.\n\nFourth, how to audit them: narrow hundreds of identities down to a short list, then ask five questions of each one. Who owns it, what can it do, when is it active, where can it be used, and why does it exist. Fifth, how to fix them with controls you already own: managed identities and workload identity federation instead of stored secrets, tightly scoped OIDC trust, least-privilege roles, Conditional Access for workload identities, a few detection queries worth scheduling, and moving CI out of the cluster with GitOps.\n\nThe wrap-up looks at AI agents that now run inside pipelines with the job's token, and ends with a short list of things to do on Monday.",
+      href: "https://www.identitysummit.cloud/",
+      slidesDir: "/talks/slides/cloud-identity-summit-2026-cicd",
+      slideCount: 73,
+      slidesUrl: "/talks/slides/cloud-identity-summit-2026-cicd.pdf",
+    },
+    {
       slug: "containerdays-2026-ebpf",
       event: "ContainerDays Hamburg 2026",
-      date: "2026",
+      date: "2-4 Sep 2026",
       location: "Hamburg, Germany",
       talkTitle: "How Clusters Fail Under Attack and How We Detect It at Runtime with eBPF Signals",
       description:
         "A practitioner's walkthrough of real attack patterns against Kubernetes clusters, and how eBPF-based runtime signals expose them before they become incidents.",
       abstract:
-        "Your pipeline is green. Every image scan passed, every policy check went through, the admission controller signed off. And your cluster still gets owned at runtime. This session follows Alex, a platform engineer whose build-time controls did everything right and still missed what mattered. We look at how clusters actually fail under attack: reverse shells opened from a running container, privilege escalation that never touches the API server, and process execution nobody wrote a policy for. Then we watch eBPF catch it. Using Tetragon, we run a live two-act demo: first detecting a reverse shell and a privilege escalation as they happen, then promoting those same detections into enforcement so the next attempt never completes. The takeaway is not that preventive controls are useless, it is that they are half the story. Runtime signals are what tell you the difference between a cluster that is secure and a cluster that has simply not been attacked yet.",
+        "Your pipeline is green. Every image scan passed, every policy check went through, the admission controller signed off. And your cluster still gets owned at runtime. This session follows Dev, a platform engineer whose build-time controls did everything right and still missed what mattered. We look at how clusters actually fail under attack: reverse shells opened from a running container, privilege escalation that never touches the API server, and process execution nobody wrote a policy for. Then we watch eBPF catch it. Using Tetragon, we run a live two-act demo: first detecting a reverse shell and a privilege escalation as they happen, then promoting those same detections into enforcement so the next attempt never completes. The takeaway is not that preventive controls are useless, it is that they are half the story. Runtime signals are what tell you the difference between a cluster that is secure and a cluster that has simply not been attacked yet.",
       href: "https://www.containerdays.io/",
-      upcoming: true,
       slidesDir: "/talks/slides/containerdays-2026-ebpf",
       slideCount: 56,
       slidesUrl: "/talks/slides/containerdays-2026-ebpf.pdf",
@@ -363,19 +377,6 @@ export const en: ResumeData = {
           "A heritage-protected former cargo shed in the Port of Hamburg, built between 1908 and 1912, and now one of the city's largest event venues.",
         address: "Schuppen 52, Australiastrasse 52, 20457 Hamburg, Germany",
       },
-    },
-    {
-      slug: "cloud-identity-summit-2026-cicd",
-      event: "Cloud Identity Summit",
-      date: "3 Nov 2026",
-      location: "Frankfurt, Germany",
-      talkTitle: "Your CI/CD Pipeline Is Over-Privileged: Identity Risks in Modern Cloud Platforms",
-      description:
-        "Why pipeline identities are the most over-privileged accounts in most organizations, and how to reduce the blast radius of CI/CD credentials in modern cloud platforms.",
-      abstract:
-        "Most organizations spend enormous effort on human identity: SSO, MFA, least privilege, quarterly access reviews. Meanwhile the CI/CD service account quietly holds cluster-admin, a long-lived cloud key, and push access to production. Nobody reviews it, because nobody thinks of a pipeline as an identity. This talk makes the case that your pipeline is the most over-privileged principal in your platform, and the least monitored. We walk through how these permissions accumulate, what an attacker does with a compromised runner, and why secret rotation alone does not fix it. Then we look at what actually reduces the blast radius: short-lived workload identity instead of static keys, scoping credentials per environment rather than per pipeline, and treating pipeline identity as something you audit on the same cadence as human access.",
-      // TODO: add the official event URL when it is published
-      upcoming: true,
     },
   ],
 

@@ -340,17 +340,31 @@ export const fr: ResumeData = {
 
   talks: [
     {
+      slug: "cloud-identity-summit-2026-cicd",
+      event: "Cloud Identity Summit 2026",
+      date: "3 nov. 2026",
+      location: "Francfort, Allemagne",
+      talkTitle: "Your CI/CD Pipeline Is Over-Privileged: Identity Risks in Modern Cloud Platforms",
+      description:
+        "Les identités de pipeline détiennent souvent le plus d'accès dans une entreprise et sont les moins gouvernées. Comment elles sont compromises, comment les auditer avec cinq questions et comment les corriger avec des contrôles que vous avez déjà.",
+      abstract:
+        "La plupart des organisations investissent beaucoup dans l'identité humaine : MFA, Conditional Access, PIM, revues d'accès. Le pipeline qui déploie en production n'en profite presque jamais. Il tourne avec un service principal doté de droits Owner, un client secret que personne n'a fait tourner, et parfois le jeton personnel d'un développeur qui fait le travail d'une machine. Les attaquants le savent, et les secrets divulgués restent souvent valides pendant des années.\n\nLa conférence se déroule en six parties. D'abord, pourquoi les attaquants ciblent les pipelines, avec des chiffres récents sur les incidents liés aux identités non humaines et les secrets divulgués. Ensuite, pourquoi les programmes d'identité conçus pour les personnes perdent la trace des machines : aucun système RH ne vous dit à qui appartient une identité de déploiement ni quand la supprimer. Troisièmement, une analyse approfondie de ce qui tourne mal : les deux questions propres à toute identité de pipeline (quel workflow peut obtenir des identifiants, et que peut-il en faire), puis les secrets statiques, les comptes de service trop larges et les workflows sans restriction, et comment un pipeline ordinaire coche la plupart des cases de l'OWASP Non-Human Identities Top 10.\n\nQuatrièmement, comment les auditer : réduire des centaines d'identités à une courte liste, puis poser cinq questions à chacune. Qui en est responsable, que peut-elle faire, quand est-elle active, où peut-elle être utilisée et pourquoi existe-t-elle. Cinquièmement, comment les corriger avec des contrôles que vous possédez déjà : identités managées et workload identity federation au lieu de secrets stockés, confiance OIDC strictement délimitée, rôles au moindre privilège, Conditional Access pour les identités de charge de travail, quelques requêtes de détection à planifier, et sortir la CI du cluster grâce à GitOps.\n\nPour finir, un regard sur les agents IA qui tournent désormais dans les pipelines avec le jeton du job, et une courte liste de choses à faire dès lundi.",
+      href: "https://www.identitysummit.cloud/",
+      slidesDir: "/talks/slides/cloud-identity-summit-2026-cicd",
+      slideCount: 73,
+      slidesUrl: "/talks/slides/cloud-identity-summit-2026-cicd.pdf",
+    },
+    {
       slug: "containerdays-2026-ebpf",
       event: "ContainerDays Hambourg 2026",
-      date: "2026",
+      date: "2-4 sept. 2026",
       location: "Hambourg, Allemagne",
       talkTitle: "How Clusters Fail Under Attack and How We Detect It at Runtime with eBPF Signals",
       description:
         "Un retour de terrain sur les schémas d'attaque réels visant les clusters Kubernetes, et sur la façon dont les signaux runtime issus d'eBPF les révèlent avant qu'ils ne deviennent des incidents.",
       abstract:
-        "Votre pipeline est au vert. Tous les scans d'images sont passés, tous les contrôles de politique aussi, l'admission controller a validé. Et votre cluster se fait quand même compromettre à l'exécution. Cette session suit Alex, un platform engineer dont les contrôles au build ont tout fait correctement et ont pourtant laissé passer l'essentiel. Nous examinons comment les clusters échouent réellement sous attaque : reverse shells ouverts depuis un conteneur en cours d'exécution, élévation de privilèges qui ne touche jamais l'API server, exécution de processus pour laquelle personne n'a écrit de politique. Puis nous regardons eBPF les détecter. Avec Tetragon, nous déroulons une démonstration en direct en deux actes : d'abord la détection d'un reverse shell et d'une élévation de privilèges en temps réel, ensuite la transformation de ces mêmes détections en enforcement, pour que la tentative suivante n'aboutisse jamais. Le message n'est pas que les contrôles préventifs sont inutiles, mais qu'ils ne racontent que la moitié de l'histoire. Les signaux runtime sont ce qui distingue un cluster sécurisé d'un cluster qui n'a simplement pas encore été attaqué.",
+        "Votre pipeline est au vert. Tous les scans d'images sont passés, tous les contrôles de politique aussi, l'admission controller a validé. Et votre cluster se fait quand même compromettre à l'exécution. Cette session suit Dev, un platform engineer dont les contrôles au build ont tout fait correctement et ont pourtant laissé passer l'essentiel. Nous examinons comment les clusters échouent réellement sous attaque : reverse shells ouverts depuis un conteneur en cours d'exécution, élévation de privilèges qui ne touche jamais l'API server, exécution de processus pour laquelle personne n'a écrit de politique. Puis nous regardons eBPF les détecter. Avec Tetragon, nous déroulons une démonstration en direct en deux actes : d'abord la détection d'un reverse shell et d'une élévation de privilèges en temps réel, ensuite la transformation de ces mêmes détections en enforcement, pour que la tentative suivante n'aboutisse jamais. Le message n'est pas que les contrôles préventifs sont inutiles, mais qu'ils ne racontent que la moitié de l'histoire. Les signaux runtime sont ce qui distingue un cluster sécurisé d'un cluster qui n'a simplement pas encore été attaqué.",
       href: "https://www.containerdays.io/",
-      upcoming: true,
       slidesDir: "/talks/slides/containerdays-2026-ebpf",
       slideCount: 56,
       slidesUrl: "/talks/slides/containerdays-2026-ebpf.pdf",
@@ -360,18 +374,6 @@ export const fr: ResumeData = {
           "Ancien hangar à marchandises classé du port de Hambourg, construit entre 1908 et 1912, aujourd'hui l'un des plus grands lieux événementiels de la ville.",
         address: "Schuppen 52, Australiastrasse 52, 20457 Hambourg, Allemagne",
       },
-    },
-    {
-      slug: "cloud-identity-summit-2026-cicd",
-      event: "Cloud Identity Summit",
-      date: "3 nov. 2026",
-      location: "Francfort, Allemagne",
-      talkTitle: "Your CI/CD Pipeline Is Over-Privileged: Identity Risks in Modern Cloud Platforms",
-      description:
-        "Pourquoi les identités de pipeline sont les comptes les plus sur-privilégiés de la plupart des organisations, et comment réduire le rayon d'impact des identifiants CI/CD.",
-      abstract:
-        "La plupart des organisations consacrent des efforts considérables à l'identité humaine : SSO, MFA, moindre privilège, revues d'accès trimestrielles. Pendant ce temps, le compte de service CI/CD détient discrètement cluster-admin, une clé cloud à longue durée de vie et un accès en écriture à la production. Personne ne le vérifie, parce que personne ne considère un pipeline comme une identité. Cette conférence défend l'idée que votre pipeline est le principal le plus sur-privilégié de votre plateforme, et le moins surveillé. Nous verrons comment ces permissions s'accumulent, ce qu'un attaquant fait d'un runner compromis, et pourquoi la seule rotation des secrets ne règle pas le problème. Puis nous examinerons ce qui réduit réellement le rayon d'impact : une identité de charge de travail à courte durée de vie plutôt que des clés statiques, des identifiants cloisonnés par environnement plutôt que par pipeline, et une identité de pipeline auditée au même rythme que les accès humains.",
-      upcoming: true,
     },
   ],
 

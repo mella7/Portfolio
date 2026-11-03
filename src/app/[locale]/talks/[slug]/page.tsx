@@ -77,9 +77,12 @@ export default function TalkPage({
       </BlurFade>
 
       <BlurFade delay={BLUR_FADE_DELAY * 2}>
-        <p className="text-muted-foreground leading-relaxed">
-          {talk.abstract ?? talk.description}
-        </p>
+        {/* A blank line ("\n\n") in the abstract starts a new paragraph. */}
+        <div className="space-y-4 text-muted-foreground leading-relaxed">
+          {(talk.abstract ?? talk.description).split(/\n\s*\n/).map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
       </BlurFade>
 
       {/* Actions */}
