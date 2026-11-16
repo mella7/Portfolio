@@ -1,0 +1,121 @@
+/* The notched card frame.
+
+   Default (every browser): ::before paints the frame as a border-image, fill
+   and outline in one SVG. Hover swaps in a copy with an accent outline.
+
+   Where mask-border is supported (Chromium, Safari): the card itself is cut to
+   the frame shape and ::before draws only the outline, so its colour can
+   animate with the theme. */
+
+.card {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  min-height: var(--ns-min);
+  padding: 24px;
+  color: var(--text);
+  transition: transform 0.5s var(--ease), background-color 0.35s;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border: var(--ns-border) solid transparent;
+  border-image-source: var(--ns-image);
+  border-image-slice: var(--ns-slice) fill;
+  border-image-repeat: stretch;
+}
+.card:hover::before,
+.card:focus-within::before {
+  border-image-source: var(--ns-image-hover);
+}
+
+@supports (-webkit-mask-box-image: none) {
+  .card {
+    background: var(--card);
+    -webkit-mask-box-image: var(--ns-mask) var(--ns-slice) fill / var(--ns-border) stretch;
+  }
+  .card::before,
+  .card:hover::before,
+  .card:focus-within::before {
+    z-index: 3;
+    border: 0;
+    border-image: none;
+    background: var(--rail, var(--line));
+    transition: background-color 0.2s ease-out;
+    -webkit-mask-box-image: var(--ns-rail-mask) var(--ns-slice) fill / var(--ns-border) stretch;
+  }
+  .card:hover,
+  .card:focus-within {
+    --rail: var(--a);
+  }
+}
+
+/* Pointer spotlight (set by motion.js through --mx / --my). */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 0%), color-mix(in srgb, var(--a) 16%, transparent), transparent 70%);
+  transition: opacity 0.35s;
+}
+.card:hover::after {
+  opacity: 1;
+}
+
+.card__title {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.card__title--sm {
+  font-size: 17px;
+}
+.card__title small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.card__label {
+  font-size: 13px;
+  color: var(--muted);
+}
+.card--link,
+a.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card__arrow {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 2;
+  color: var(--soft);
+  transition: transform 0.2s var(--ease), color 0.2s;
+}
+.card:hover .card__arrow {
+  color: var(--a);
+  transform: translate(3px, -3px);
+}
+.card__dots {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle, color-mix(in srgb, var(--a) 60%, transparent) 1px, transparent 1.5px) 0 0 / 12px 12px;
+  -webkit-mask: linear-gradient(90deg, transparent 30%, #000);
+  mask: linear-gradient(90deg, transparent 30%, #000);
+  opacity: 0.45;
+  transition: opacity 0.3s;
+}
+.card:hover .card__dots {
+  opacity: 1;
+}

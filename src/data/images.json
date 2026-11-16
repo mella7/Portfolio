@@ -1,0 +1,236 @@
+{
+ "moments/certificate-handover": {
+  "w": 1600,
+  "h": 2133,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "lqip": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4IJ4AAABQBACdASoPABQAPu1iqU2ppaOiMAgBMB2JZgCdAYyy7PB3ra8g9+5f+vDwAPuk9vxKg5noUFDh1mE2wnJb/PQ7POqqm0Y0YCHrOsNsQH6MhcvQtBBdcGnt6LZM0MgzXNrPakqnsFx5S451pw/FRQUGHMzQo6GG2E+96z8jgrFUUNX7J0uZHKGK8dS787QVtykjwuVtu3iuUpLgSwAAAA=="
+ },
+ "moments/cloud-identity-summit-speaker": {
+  "w": 480,
+  "h": 640,
+  "widths": [
+   480
+  ],
+  "lqip": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAACQBACdASoPABQAPu1iqU2ppaOiMAgBMB2JQBWGUDX1d0AAXWKmsVJYmAQldAAA+2Dtk4Y0hPkUO29YKL8CsE3YiT+KwR4hgvo41bhreKVRU3jF/ca8YjdMY0G/qHWF8IGN5m399o4rcUy6njjwm4M3fMzGpYNMQakfTVX0lB6Y56s/+F3yFwembSLQ5xGGQ5qjXObkS564Yp0wBAA="
+ },
+ "moments/cloud-identity-summit-talk": {
+  "w": 1280,
+  "h": 960,
+  "widths": [
+   480,
+   960,
+   1280
+  ],
+  "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAAAwBACdASoUAA8APu1iqU2ppaOiMAgBMB2JaACsAywBYdnaZ7copIR+qAAA4d9ghJ48WcQNe3FbLkmD2yswe5a3J9bglVN1iF1lEqW02GJWrX4a6pQyFxF8vGFXBWanV3fbcpjILhIh8iRrhRRDp8IemMleGa8iw313a0QUbnd3WKY3YngAAA=="
+ },
+ "moments/conference-badge": {
+  "w": 1536,
+  "h": 2048,
+  "widths": [
+   480,
+   960,
+   1536
+  ],
+  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAABwAwCdASoPABQAPu1iqU2ppaOiMAgBMB2JQBWAAXRTnsqTTQAA/issAyrN/jdvdm1uSzVWdsZJyr5o8a4LvikcIpcqpxafm/COsBSfoLF47ZR9WVZ1HVx+lbU1SoOI+4rYGqNXxkQ4+u09tUlc2Gl+Oyt6c4BUNAA="
+ },
+ "moments/containerdays-audience": {
+  "w": 1280,
+  "h": 591,
+  "widths": [
+   480,
+   960,
+   1280
+  ],
+  "lqip": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACQAwCdASoUAAkAPu1iqU2ppaOiMAgBMB2JZQAAUWQ8We33v9AAAP7w3dbov5Uw2fN4k/g9vDyKdx7IqbgBxdp9BBYrBtRgAAA="
+ },
+ "moments/containerdays-session-screen": {
+  "w": 800,
+  "h": 1066,
+  "widths": [
+   480,
+   800
+  ],
+  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADQAwCdASoPABQAPu1iqU2ppaOiMAgBMB2JaAC06B2hPKto0Fp6VIAA/unX2Zntwe72j0DgP4PGrL84X1/YsGnb2vVp2LOr1LisMuygopODMFCK4JUzXEQWgasjO9pm3iekKGW3e8KTSqeAf9ipKkmjuvvqAAAA"
+ },
+ "moments/containerdays-stage": {
+  "w": 1280,
+  "h": 887,
+  "widths": [
+   480,
+   960,
+   1280
+  ],
+  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAQBACdASoUAA4APu1iqU2ppaOiMAgBMB2JaAB3AASb7y0KM03dbHArQAD8ogj6Crdvnfxi2A5s1Fh/405XJxNcjmOhS/5uf9+aLWXIj8AYiQCF5VeEa/kify3lN0u5gYcsCXuL+5wJHY/c+3RwS6+jAPRtM9isJ5dX3V86ElcAAA=="
+ },
+ "moments/enactus-make-it-real": {
+  "w": 1600,
+  "h": 864,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBibA6eV7PNRvBsNHE1QAP7e6D5MzKRa7DKXxzETknrf3Cd7IaVSaPZ93bEh3Y7A1JS+/GUBRH8ceBD3KxFnbR+cbA92qHg+EoBRppWatw1j/HDr1RAA"
+ },
+ "moments/group-photo-1": {
+  "w": 1278,
+  "h": 958,
+  "widths": [
+   480,
+   960,
+   1278
+  ],
+  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAADwAwCdASoUAA8APu1iqU2ppaOiMAgBMB2JQBYdhFNWctf11OV208isANuTDbpVBBdOg5ozG83UP+uWGl9PKWibJ2bc3JCldlJ3za1MwgiFstdayTPOKY4RV7tAnZtATTWyEDTsLGyJ6QmsAtLMnEhvIaWEvf1IAIJIAtgAAAA="
+ },
+ "moments/group-photo-2": {
+  "w": 1280,
+  "h": 958,
+  "widths": [
+   480,
+   960,
+   1280
+  ],
+  "lqip": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAABQBACdASoUAA8APu1iqU2ppaQiMAgBMB2JYwC06YxEyO+QPbY/2yz7dWiAAP3iY5k7NLhHd8/KyDaWm0TNl/WKlZyq5wfRigheUsf1FKkC9NOkK/SXFjEG5ynbcmVK6FSCK3NeldLzJFNgcj79HLkmBibtwYxzU71HQ+kZF3fYF7cpyrZxsAAA"
+ },
+ "moments/group-photo-3": {
+  "w": 960,
+  "h": 768,
+  "widths": [
+   480,
+   960
+  ],
+  "lqip": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAAAwBACdASoUABAAPu1iqU2ppaOiMAgBMB2JYgCdH8ACQ1rz0NikWUVoDAAA/lsNcg/g51o7Iq7+Gv/CJP8oYbncdv6SHbHEobjj1oF1HCWqhJb3WjNWeF5ZgQwGjr2CsKxX3bOWtFGWQ46R9FwGBe6ATU70RNoH37zIPZnHls61BbfRXFsCDUqS2I5UAAAA"
+ },
+ "moments/huawei-2022-prize": {
+  "w": 1447,
+  "h": 1536,
+  "widths": [
+   480,
+   960,
+   1447
+  ],
+  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADwAwCdASoTABQAPu1sq1EppaOiqAqpMB2JQAAFnw0stx1AFQ7N6yCAAPjgkfPPvaFNtzHgtoOcd/pUjjxM1kFGVYNYTTt6G20LXlTyBh7ZQT/RgKT223L+ccURRMInfvBLrCwD3bHKropY4TPWUufBmMc3T/8wgObDDgo4TSzAAA=="
+ },
+ "moments/huawei-award-ceremony-stage": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAABQBACdASoUAA8APu1iqU2ppaOiMAgBMB2JbACdMoEUoAYvnaBhSC5UclFAAP7AOVHMUVaaX91DruqcAmJPH/YdPJcP3Vr2yWL8+iYPN9fBQ1+qgujbWpWdFRvfToRyHqDpEo9N8uAduD31YPol7cLF0IDZyiyHYrpphDN+t8X117jgGyBlTviTM+ZcVRsBF4AAAA=="
+ },
+ "moments/huawei-computing-track-first-prize": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAABwBACdASoUAA8APu1iqU2ppaOiMAgBMB2JbACdL144GMdKoAXdKcKlHilhPAD+2NdCwOYxSwErdPhBujEFLPka6QZuyvd36wcmw/uLN6qpfOlCQKyKhvbaUjLjvuBx7snbrYqXc+6H9QhZ6K5HLOZoT0QvnzIrFkUfKPdED3mjX+paShCB80zvH+TUDkAAAAA="
+ },
+ "moments/huawei-global-final-shenzhen": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAAAwBACdASoUAA8APu1iqU2ppaOiMAgBMB2JbACsACIaW2wue/FQR1YuQugA+Mg4B0NpyaEe+TeFtBvddKQT42wkyoXP7dLNLL+9ul+PoMHjFh1l3IoLi2bu+aAinJlq+DlhhL4EHh3lvI3955qwC+VoaMEzhW1K7PyMIDS7pf00NzV6C8tZY6Sm0pdkpNlCO2USF3sBCBtsVX37BNkOkKXN0UgbYbvRm5K5ZoSiAAA="
+ },
+ "moments/huawei-global-first-prize": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAABQBACdASoUAA8APu1iqU2ppaQiMAgBMB2JbACdMoET/gU1L1v446n09qRAAP7aHPMFDq4X/JgwucVTCaVMUVkxYSM9LkG1u1EkQ82OlVFFtSQU5XHdF0PP2I43/MzJPNfNyGliog31+1NdO7frsHBMxj10m+uVAuv1JJ8eEwX+2e/b9XA1/L/3OOtGvYRPWV5cXtNbT087HZAAAAA="
+ },
+ "moments/huawei-medals": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAADQAwCdASoUAA8APu1iqU2ppaOiMAgBMB2JbACdMoABmlyUWRKRjMAA3wONNyP7Ab9ery2FUyCpb3hjVFFaFnHWmfP5/qPAYJZf0Urv9WUEsFxkjQTtyMIft9n+a4MKJahcGB/FMVUzbOV3SM8R6pqqgo7e2NV/wAjk2OASMnGbtkDSBRLfnP1AAAA="
+ },
+ "moments/huawei-tunisia-team": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAABwBACdASoUAA8APu1iqU2ppaOiMAgBMB2JbACdL1yB2z9BhwXiSxSG3Ch40AD+5EvNvtDFB1Qmqb8xKuJfsQp+3Js7BcE0s0L/T6Ni9R4vOK27vZ104R+mnck66Sii6cb9x8BMZtQNgY53f8v/okEBXTsWQWJXSpSTzn+W11gtf0/BP7o1CRT4Tg1Il2J+dm2Khz7UtCUv/Ptshw10u7itoAAAAA=="
+ },
+ "moments/jci-panel": {
+  "w": 960,
+  "h": 470,
+  "widths": [
+   480,
+   960
+  ],
+  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAwBACdASoUAAoAPu1iqU2ppaOiMAgBMB2JZwAD5LFjr8lYtJDIRTZbM/gA/sdrxAeud7J4nQUKYcAc+JEc/xDqfZlhaMDUhR21rneaiO8ZT8qxyQItMIlNB28/d7D1RXr6y+0jzMvW0ZHoS9VCSv172VgdL53/xMhddZS9EvAAAA=="
+ },
+ "moments/ost-family-gathering": {
+  "w": 1600,
+  "h": 1067,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "lqip": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4IKYAAABwBACdASoUAA0APu1iqU2ppaOiMAgBMB2JbACsOUDZAOVWSA3uOxqjUqLuzAD86sxl78XGKORa8mqWwQY395fvIabIKFB394cpuQx++J2psaHPoVAXA1tSxZKjAm1pmrCzbsTKuLt1xN7Ql2RNqNjs8qPVzbA+80rhA/vcL016Tl7781759a1dSaNYnm4L1idsa5ferp/HihH4raP4ONwzrTtlFgAA"
+ },
+ "moments/portrait-badge": {
+  "w": 1200,
+  "h": 1500,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAADQAwCdASoQABQAPu1iqU2ppaOiMAgBMB2JYgCdAB93S27+ix+TVwAA/p8pYI43agsOUVMnTytHNIJWnwx52dP7CPr/BJxCPtEOkDNM/mpuk+ywrKKtRG0Brfs7556rGuIpf+Oc6JzAAapu7V8ilGXXi4A7+O2fkZ8gbncnIw5h3zAkAAA="
+ },
+ "moments/tekup-graduation": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAwBACdASoUAA8APu1iqU2ppaOiMAgBMB2JZQAML+DDlg718eK7WtSdJvAA/pFNH/wjGH6fvBxHfryOODgs8bYxhFk5WB4w8RNHq/dS0ms79ZvPqbBaNyiowyGUYV394JMimjXx1bvnXsnB30im0stRW4s+7Lwz6ymQTeTIl2W4kcVgAAA="
+ },
+ "moments/tekup-graduation-team": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ],
+  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAQBACdASoUAA8APu1iqU2ppaOiMAgBMB2JZACdAB8xPLrEE5LhWiKU4AD+BPAaVi5DGYf2wgfac6X+ond9LH1sJS/LDQ0KsAMr8/QvFG3usSVfGVCs9Yy0HgpC/uMoYdcLMBzMOnrdKsXB5FvfHeSjy7e9KcKmG+RiTJSSQAA="
+ },
+ "projects/guardianx": {
+  "w": 960,
+  "h": 491,
+  "widths": [
+   480,
+   960
+  ],
+  "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAAAQAwCdASoUAAoAPu1iqU2ppaOiMAgBMB2JZwAAW4WnK6AA/vQm9jwhP6TMXsbb5+mAzF7gJTvf+7raAAA="
+ }
+}

@@ -1,15 +1,20 @@
 {
-  "name": "mam",
-  "version": "1.0.0",
-  "description": "AI chat CLI — text and images via your Hetzner relay",
+  "name": "mella7-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Personal portfolio of Mohamed Ali Mellah. A static site and a small statistics server, with zero dependencies.",
+  "license": "MIT",
   "type": "module",
-  "bin": { "mam": "./src/mam.js" },
-  "scripts": { "start": "node src/mam.js" },
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "conf": "^13.0.0",
-    "form-data": "^4.0.0",
-    "node-fetch": "^3.3.2",
-    "ora": "^8.0.1"
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs && node scripts/check.mjs",
+    "start": "node scripts/build.mjs && node server/server.mjs",
+    "walker": "python3 scripts/walker.py",
+    "passkey": "node -e \"console.log(require('node:crypto').randomBytes(18).toString('base64url'))\"",
+    "telegram": "node server/telegram-setup.mjs"
   }
 }

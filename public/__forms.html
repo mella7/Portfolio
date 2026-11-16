@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+    <title>Forms</title>
+  </head>
+  <body>
+    <!-- Registers the "Get in touch" form with Netlify Forms. The visible form
+         on the homepage posts here with fetch; keep the field names in sync
+         with contactSection() in src/views/home.mjs. -->
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact">
+      <input name="bot-field">
+      <input name="name">
+      <input name="email" type="email">
+      <textarea name="message"></textarea>
+    </form>
+  </body>
+</html>

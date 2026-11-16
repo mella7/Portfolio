@@ -1,0 +1,71 @@
+/* Dashboard for the visitor statistics. Plain and readable. */
+:root {
+  color-scheme: dark;
+  --bg: #0b0b0b;
+  --card: #171717;
+  --line: #333;
+  --text: #f4f4f4;
+  --muted: #9a9a9a;
+  --accent: #e63946;
+  --second: #66bb6a;
+  --mono: ui-monospace, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+[hidden] { display: none !important; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
+.head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.eyebrow { margin: 0; font: 11px var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+h1 { margin: 2px 0 0; font-size: 30px; letter-spacing: -0.02em; }
+h2 { margin: 0 0 12px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+button, select, input {
+  font: inherit; color: inherit; background: var(--card); border: 1px solid var(--line); padding: 7px 12px; border-radius: 6px;
+}
+button { cursor: pointer; }
+button:hover, select:hover { border-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.controls { display: flex; align-items: center; gap: 8px; }
+.controls label { color: var(--muted); font-size: 13px; }
+.login { display: grid; gap: 10px; max-width: 360px; padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+.login button { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.status { margin: 0; min-height: 1.4em; color: #f3a3aa; font-size: 14px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.tile, .panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.tile b { display: block; font-size: 34px; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tile span { color: var(--muted); font-size: 13px; }
+.panel { margin-bottom: 16px; }
+.chart { display: flex; align-items: flex-end; gap: 2px; height: 150px; border-bottom: 1px solid var(--line); }
+.bar { position: relative; flex: 1; min-width: 2px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+.bar i { display: block; background: var(--accent); min-height: 0; border-radius: 2px 2px 0 0; }
+.bar i.qr { background: var(--second); border-radius: 0; }
+.bar:hover i { filter: brightness(1.3); }
+.legend { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+.key { display: inline-block; width: 10px; height: 10px; margin: 0 6px 0 12px; border-radius: 2px; vertical-align: -1px; }
+.key:first-child { margin-left: 0; }
+.key--views { background: var(--accent); }
+.key--qr { background: var(--second); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.grid .panel { margin: 0; }
+.rows { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.rows li { position: relative; display: flex; justify-content: space-between; gap: 12px; padding: 4px 8px; font-size: 14px; }
+.rows li i { position: absolute; inset: 0 auto 0 0; background: rgba(230, 57, 70, 0.18); border-radius: 4px; }
+.rows li span, .rows li b { position: relative; }
+.rows li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rows li b { font-variant-numeric: tabular-nums; font-weight: 600; }
+.empty { color: var(--muted); font-size: 14px; margin: 0; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+td { font-variant-numeric: tabular-nums; }
+.note { color: var(--muted); font-size: 13px; max-width: 70ch; }
+
+/* Match the site's page-to-page fade when arriving from the terminal. */
+@view-transition {
+  navigation: auto;
+}

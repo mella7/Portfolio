@@ -1,0 +1,131 @@
+/* Motion that is shared across pages, the wandering avatar, and the
+   reduced-motion switch that turns all of it off. */
+
+/* Page-to-page crossfade (browsers with cross-document view transitions). */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: vt-out 0.22s ease-in both;
+}
+::view-transition-new(root) {
+  animation: vt-in 0.34s var(--ease) both;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* Scroll reveal. Content is hidden only once the script is running (.js),
+   so the page reads fine without JavaScript. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s var(--ease) var(--d, 0ms),
+    transform 0.9s var(--ease) var(--d, 0ms);
+}
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Heading "decode" effect: characters that have not settled yet. */
+.scr {
+  color: var(--a);
+  opacity: 0.75;
+}
+
+/* 3D tilt on cards (motion.js sets --rx / --ry while the pointer is over). */
+[data-tilt] {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s var(--ease);
+}
+[data-tilt].is-tilting {
+  transition: transform 0.08s linear;
+}
+.js .reveal[data-tilt].is-in {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+
+/* Page header slides in. */
+.phead > * {
+  animation: rise 0.8s var(--ease) both;
+}
+.phead > :nth-child(2) { animation-delay: 0.06s; }
+.phead > :nth-child(3) { animation-delay: 0.12s; }
+.phead > :nth-child(4) { animation-delay: 0.18s; }
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* ------------------------------------------------------- walking avatar
+   A small character that strolls along the bottom edge and does tricks.
+   Hidden on small screens and when switched off. */
+.companion {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 95;
+  display: none;
+  background-image: var(--walk-sheet);
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.55));
+  transform-origin: 50% 50%;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
+.companion.is-on {
+  display: block;
+}
+@media (max-width: 700px) {
+  .companion.is-on,
+  #companion-toggle {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .mq,
+  .slideshow__track {
+    animation: none !important;
+  }
+  .slideshow,
+  .card--mq {
+    overflow-x: auto;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .companion {
+    display: none;
+  }
+  @view-transition {
+    navigation: none;
+  }
+}
