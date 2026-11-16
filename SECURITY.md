@@ -8,8 +8,9 @@ as I can and credit you if you would like.
 
 ## How the site is built to stay safe
 
-- **No dependencies.** The build and the site use Node's standard library
-  only, so there is no third-party package to compromise or to keep patched.
+- **No dependencies in the site.** The build and the site use Node's standard
+  library only. The only package is `@netlify/blobs` (Netlify's own), used by
+  the Netlify functions to store statistics; it never reaches the browser.
 - **No third-party requests.** Fonts, scripts and images are served from the
   site itself. There are no cookies, no CDNs and no third-party analytics;
   statistics are collected by the project's own server (see below).
@@ -30,10 +31,15 @@ as I can and credit you if you would like.
 - **Response headers** (`dist/_headers`): CSP with `frame-ancestors 'none'`,
   `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS.
 
-## The statistics server (`server/server.mjs`)
+## The statistics (`server/server.mjs` and `netlify/functions/`)
+
+Both versions share `server/core.mjs` and follow the same rules:
 
 - **No personal data at rest.** IP addresses are hashed with a salt that is
-  replaced every day and are never written to disk. No cookies.
+  replaced every day and are never written to disk. On Netlify the old salts
+  are deleted after two days. No cookies.
+- **Telegram messages** carry the same anonymous details as the dashboard
+  (page, referrer, country, device, language), never an IP address.
 - **Input is untrusted.** Request bodies are capped at 4 KB, every field is
   type-checked, length-limited and stripped of control characters, and only
   simple keys are accepted.

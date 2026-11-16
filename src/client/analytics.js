@@ -12,7 +12,22 @@
 import { $$, root } from "./util.js";
 
 const endpoint = root.dataset.analytics || "";
-const optedOut = navigator.doNotTrack === "1" || window.doNotTrack === "1" || navigator.globalPrivacyControl === true;
+
+// Open any page once with ?notrack and this browser is never counted again
+// (handy for your own visits); ?track undoes it. Kept in local storage.
+function switchedOff() {
+  try {
+    const query = new URLSearchParams(location.search);
+    if (query.has("notrack")) localStorage.setItem("stats-off", "1");
+    else if (query.has("track")) localStorage.removeItem("stats-off");
+    return localStorage.getItem("stats-off") === "1";
+  } catch {
+    return false;
+  }
+}
+
+const optedOut =
+  navigator.doNotTrack === "1" || window.doNotTrack === "1" || navigator.globalPrivacyControl === true || switchedOff();
 const enabled = Boolean(endpoint) && !optedOut;
 
 // Ties the events of one page load together. Not stored anywhere.

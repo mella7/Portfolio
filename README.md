@@ -4,9 +4,12 @@ The personal portfolio of Mohamed Ali Mellah: a bento-grid homepage, an
 interactive terminal, talks with a slide viewer, projects, certifications,
 photos and a blog.
 
-It is a static site with **zero dependencies**. A small Node script turns the
-data in `src/data/` into plain HTML, CSS and JavaScript. There is no
-framework, no bundler and nothing to `npm install`.
+The site itself has **zero dependencies**. A small Node script turns the data
+in `src/data/` into plain HTML, CSS and JavaScript. There is no framework and
+no bundler. The visitor statistics run next to it: on Netlify as four small
+functions (`netlify/`), or anywhere else as one Node server (`server/`). The
+Netlify functions use one package, `@netlify/blobs`, to store the data;
+Netlify installs it during the build.
 
 ## Quick start
 
@@ -32,7 +35,7 @@ npm start        # build, then run the site with visitor statistics on :8080
 | Travel | `/travel/` | A dithered globe you can drag, with visited countries lit |
 | QR landing | `/qr`, `/qr/<name>` | Counts the scan, then always goes to the homepage |
 | Privacy | `/privacy/` | What the statistics record |
-| Statistics | `/stats` | Dashboard, only when the site runs with `server/server.mjs` |
+| Statistics | `/stats` | Dashboard, unlocked with the `STATS_TOKEN` passkey |
 
 ## Project layout
 
@@ -43,10 +46,15 @@ scripts/
   check.mjs      checks links, assets and the CSP rules in dist/
   images.py      builds responsive photos and slides (optional, needs Pillow)
   walker.py      builds the walking-avatar sprite sheets (optional, needs Pillow)
+netlify/
+  functions/     hit.mjs (/api/hit), qr.mjs (/qr), stats-api.mjs (/api/stats),
+                 report.mjs (runs hourly: Telegram summary, tidying up)
+  lib/           stats-store.mjs: the statistics kept in Netlify Blobs
 server/
+  core.mjs       what a hit is and how input is cleaned (shared with netlify/)
   server.mjs     serves dist/, collects statistics, counts QR scans
   stats.mjs      turns stored hits into the dashboard numbers
-  notify.mjs     Telegram summaries and spike alerts
+  notify.mjs     Telegram summaries and new-visitor messages
   env.mjs        reads settings from .env
   dashboard/     the /stats page
 src/
@@ -145,8 +153,28 @@ script again. Frame layout: `SITE.companion` in `site.mjs`.
 
 ## Visitor statistics
 
-`server/server.mjs` serves the site and records anonymous statistics. It has
-no dependencies and keeps its data in plain files.
+The site sends anonymous page views and events to `/api/hit`. Two things can
+answer there, and they record exactly the same data:
+
+- **On Netlify** (how mella7.me runs): the functions in `netlify/functions/`.
+  The data lives in Netlify Blobs (store `stats`), nothing to set up.
+- **Anywhere else**: `server/server.mjs`, which also serves the site and keeps
+  its data in plain files.
+
+### On Netlify
+
+Set these in Netlify under Project configuration > Environment variables, then
+trigger a new deploy (functions only see variables from the deploy onwards):
+
+| Variable | Meaning |
+| --- | --- |
+| `STATS_TOKEN` | The passkey for `/stats`. `npm run passkey` makes a strong one. |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Telegram messages (see below) |
+
+Build settings stay as they are: build command `npm run build`, publish
+directory `dist`, functions directory `netlify/functions`.
+
+### Locally or in a container
 
 ```bash
 cp .env.example .env     # then fill it in; .env is never committed
@@ -158,7 +186,8 @@ npm start
 
 ### Opening the dashboard
 
-- Go to `/stats` and enter the passkey, or
+- Go to `https://mella7.me/stats` and enter the passkey (the value of
+  `STATS_TOKEN`), or
 - open the terminal on the site (Ctrl+K), type the hidden word (`iamroot`
   by default, `statsCommand` in `site.mjs`) and then the passkey. It is typed
   masked, checked by the server and never printed or kept in the history.
@@ -168,16 +197,28 @@ The passkey is the protection. It exists only on the server as `STATS_TOKEN`.
 
 ### Telegram updates
 
-The server can message you on Telegram: a summary every 15 days, and an
-alert when visitors suddenly rise (at least 25 in an hour and three times
-the usual hourly number; all three values are settings).
+You get two kinds of messages:
+
+- **A new visitor**: the first page view of each visitor on a given day,
+  with the page, where they came from (including which QR code), country,
+  device, language and time. `NOTIFY_NEW_VISITORS=0` turns these off.
+- **A summary every 15 days** (`REPORT_EVERY_DAYS`). The first one is a short
+  "statistics are connected" message, sent within the hour after the first
+  deploy with Telegram set up; the clock starts then.
+
+Your own visits: open the site once with `?notrack` at the end of the address
+(`https://mella7.me/?notrack`) on each browser and phone you use. That browser
+is then never counted or announced. `?track` undoes it.
+
+Setting up the bot:
 
 1. Create a bot with @BotFather and put its token in `.env` as
    `TELEGRAM_BOT_TOKEN`.
 2. Open the bot in Telegram and send it `/start`.
 3. `npm run telegram` prints your chat id. Put it in `.env` as
    `TELEGRAM_CHAT_ID`.
-4. `npm run telegram` again sends a test message. Restart the server.
+4. `npm run telegram` again sends a test message. Copy both values into
+   Netlify (or restart the server).
 
 **What you get**: visitors per day, page views, where visitors came from
 (referring site and `?utm_source=` / `?ref=` tags), country, device, browser,
@@ -205,19 +246,22 @@ Cloudflare (`CF-IPCountry`), Vercel or Netlify headers are read automatically.
 | `QR_TARGET` | Where `/qr` redirects | `/` |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Telegram updates | off |
 | `REPORT_EVERY_DAYS` | Days between summaries | `15` |
-| `SPIKE_MIN_VISITORS`, `SPIKE_FACTOR` | What counts as a spike | `25`, `3` |
+| `NOTIFY_NEW_VISITORS` | `0` stops the per-visitor messages | on |
+| `NOTIFY_TIMEZONE` | Time zone for the times in messages | `Europe/Berlin` |
+| `STATS_KEEP_DAYS` | Netlify only: days of hits to keep | `400` |
 
 ### QR codes
 
 Point a QR code at `https://mella7.me/qr`. Every scan is counted and the
-visitor lands on the homepage. Use a name to tell codes apart:
+visitor lands on the homepage (as `/?ref=qr-<name>`, so the new-visitor
+message says which code they scanned). Use a name to tell codes apart:
 `https://mella7.me/qr/business-card`, `https://mella7.me/qr/poster-hamburg`.
 The dashboard lists scans per name.
 
-### If the site stays on a static host
+### On a host without functions
 
-A static host (Netlify, Cloudflare Pages, GitHub Pages) cannot run the
-server. Run it somewhere else (a small container is enough), then:
+Cloudflare Pages or GitHub Pages cannot run either version. Run the server
+somewhere else (a small container is enough), then:
 
 1. In `src/data/site.mjs` set `analytics.endpoint` to its full address, for
    example `https://stats.mella7.me/api/hit`. The build adds that origin to
@@ -235,9 +279,11 @@ The site is the `dist/` folder. Any static host works.
   then run it with `STATS_TOKEN` set and a volume on `/data`; see the
   comments in the `Dockerfile`. Put a TLS proxy in front and set
   `TRUST_PROXY=1`.
-- **Netlify**: `netlify.toml` is included. The contact form uses Netlify
-  Forms (`public/__forms.html` registers it); turn on form detection in the
-  Netlify dashboard.
+- **Netlify** (site and statistics): build command `npm run build`, publish
+  directory `dist`, functions directory `netlify/functions`, and the variables
+  from "On Netlify" above. The contact form uses Netlify Forms
+  (`public/__forms.html` registers it); turn on form detection in the Netlify
+  dashboard.
 - **Cloudflare Pages**: build command `node scripts/build.mjs`, output `dist`.
   `dist/_headers` is read automatically. Point `contactFormAction` in
   `site.mjs` at your own form endpoint on the same origin.

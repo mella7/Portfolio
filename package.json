@@ -2,7 +2,7 @@
   "name": "mella7-portfolio",
   "version": "2.0.0",
   "private": true,
-  "description": "Personal portfolio of Mohamed Ali Mellah. A static site and a small statistics server, with zero dependencies.",
+  "description": "Personal portfolio of Mohamed Ali Mellah. A static site with zero dependencies, plus visitor statistics as Netlify Functions or a small Node server.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -16,5 +16,8 @@
     "walker": "python3 scripts/walker.py",
     "passkey": "node -e \"console.log(require('node:crypto').randomBytes(18).toString('base64url'))\"",
     "telegram": "node server/telegram-setup.mjs"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.9"
   }
 }

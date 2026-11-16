@@ -27,6 +27,8 @@
 //   QR_TARGET        where /qr redirects                     (default /)
 //   TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID   send updates to Telegram (see notify.mjs)
 //
+// On Netlify the same work is done by netlify/functions/ instead.
+//
 // All of these can also be put in a .env file in the project root.
 
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
@@ -36,6 +38,7 @@ import { createServer } from "node:http";
 import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { BOT, MAX_BODY, describeAgent, firstLanguage, parseHit, qrCode, qrHit, qrRedirect } from "./core.mjs";
 import { loadEnv } from "./env.mjs";
 import { startNotifier } from "./notify.mjs";
 import { summarise } from "./stats.mjs";
@@ -50,9 +53,7 @@ const DATA_DIR = resolve(process.env.DATA_DIR || join(HERE, "data"));
 const STATS_TOKEN = process.env.STATS_TOKEN || "";
 const ALLOWED_ORIGINS = new Set((process.env.ALLOWED_ORIGINS || "").split(",").map((o) => o.trim().replace(/\/+$/, "")).filter(Boolean));
 const TRUST_PROXY = process.env.TRUST_PROXY === "1";
-const QR_TARGET = /^\/[^/\\]/.test(process.env.QR_TARGET || "") ? process.env.QR_TARGET : "/";
-
-const MAX_BODY = 4096;
+const QR_TARGET = process.env.QR_TARGET || "/";
 const HITS_PER_MINUTE = 120;
 const AUTH_TRIES_PER_MINUTE = 10;
 
@@ -113,19 +114,6 @@ const visitorId = (request) =>
 
 // ------------------------------------------------------- request details
 
-const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp\/|curl|wget|python|httpclient|headless|go-http|monitor|lighthouse|pingdom|uptime/i;
-
-function describeAgent(ua) {
-  const device = /ipad|tablet/i.test(ua) ? "tablet" : /mobi|iphone|android/i.test(ua) ? "mobile" : "desktop";
-  const browser =
-    /edg\//i.test(ua) ? "Edge" : /opr\/|opera/i.test(ua) ? "Opera" : /firefox\//i.test(ua) ? "Firefox" :
-    /samsungbrowser/i.test(ua) ? "Samsung Internet" : /chrome\//i.test(ua) ? "Chrome" : /safari\//i.test(ua) ? "Safari" : "Other";
-  const os =
-    /windows/i.test(ua) ? "Windows" : /iphone|ipad|ios/i.test(ua) ? "iOS" : /android/i.test(ua) ? "Android" :
-    /mac os x|macintosh/i.test(ua) ? "macOS" : /cros/i.test(ua) ? "ChromeOS" : /linux/i.test(ua) ? "Linux" : "Other";
-  return { device, browser, os };
-}
-
 // Country only if something in front of this server already worked it out.
 function country(request) {
   const direct = request.headers["cf-ipcountry"] || request.headers["x-vercel-ip-country"] || request.headers["x-country-code"];
@@ -141,12 +129,6 @@ function country(request) {
   }
   return "";
 }
-
-/** Keep a visitor-supplied value short, single-line and printable. */
-const clean = (value, max = 120) =>
-  typeof value === "string" || typeof value === "number"
-    ? String(value).replace(/[\u0000-\u001f\u007f]/g, " ").trim().slice(0, max)
-    : "";
 
 // ----------------------------------------------------------------- storage
 
@@ -193,19 +175,23 @@ const allowAuthTry = limiter(AUTH_TRIES_PER_MINUTE);
 
 // -------------------------------------------------------------- recording
 
+let notifier = null; // set when the server starts, if Telegram is configured
+
 function record(request, fields) {
   const ua = String(request.headers["user-agent"] || "");
   if (!ua || BOT.test(ua)) return;
   const id = visitorId(request);
   if (!allowHit(id)) return;
-  store({
+  const hit = {
     ts: new Date().toISOString(),
     id,
     country: country(request),
     ...describeAgent(ua),
-    lang: clean(String(request.headers["accept-language"] || "").split(",")[0], 12),
+    lang: firstLanguage(request.headers["accept-language"]),
     ...fields,
-  });
+  };
+  store(hit);
+  notifier?.visitor(hit);
 }
 
 function readBody(request) {
@@ -252,39 +238,16 @@ async function handleHit(request, response) {
   } catch {
     return send(response, 400, "bad request", corsHeaders(request));
   }
-  if (payload && typeof payload === "object" && !Array.isArray(payload)) {
-    const path = clean(payload.p, 200);
-    const type = payload.t === "event" ? "event" : "view";
-    const data = {};
-    if (payload.d && typeof payload.d === "object") {
-      for (const [key, value] of Object.entries(payload.d).slice(0, 8)) {
-        const k = clean(key, 24);
-        const v = clean(value, 160);
-        if (/^[a-z][a-z0-9_]*$/i.test(k) && v) data[k] = v;
-      }
-    }
-    if (path.startsWith("/")) {
-      record(request, {
-        type,
-        path,
-        name: type === "event" ? clean(payload.n, 40) : "",
-        ref: clean(payload.r, 120),
-        src: clean(payload.s, 60),
-        tz: clean(payload.z, 40),
-        screen: clean(payload.w, 12),
-        view: clean(payload.v, 16),
-        data,
-      });
-    }
-  }
+  const fields = parseHit(payload);
+  if (fields) record(request, fields);
   response.writeHead(204, { ...corsHeaders(request), "Cache-Control": "no-store" }).end();
 }
 
 // The QR-code link: count the scan on the server, then always go home.
 function handleQr(request, response, url) {
-  const code = clean(url.pathname.split("/")[2] || url.searchParams.get("c") || "qr", 40).toLowerCase().replace(/[^a-z0-9-]/g, "") || "qr";
-  record(request, { type: "event", path: "/qr", name: "qr-scan", ref: "", src: "qr", tz: "", screen: "", view: "", data: { code } });
-  response.writeHead(302, { Location: QR_TARGET, "Cache-Control": "no-store", ...SECURITY_HEADERS }).end();
+  const code = qrCode(url);
+  record(request, qrHit(code));
+  response.writeHead(302, { Location: qrRedirect(QR_TARGET, code), "Cache-Control": "no-store", ...SECURITY_HEADERS }).end();
 }
 
 // --------------------------------------------------------------- dashboard
@@ -376,8 +339,12 @@ server.listen(PORT, HOST, () => {
   console.log(`Site:  http://localhost:${PORT}   (serving ${SITE_DIR})`);
   console.log(STATS_TOKEN ? `Stats: http://localhost:${PORT}/stats` : "Stats: disabled (set STATS_TOKEN to enable the dashboard)");
   if (STATS_TOKEN && STATS_TOKEN.length < 16) console.warn("Warning: STATS_TOKEN is short. Use at least 16 characters (npm run passkey).");
-  const notifying = startNotifier({ loadHits, dataDir: DATA_DIR, site: process.env.SITE_NAME || "mella7.me" });
-  console.log(notifying ? "Telegram: updates on" : "Telegram: off (set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)");
+  notifier = startNotifier({ loadHits, dataDir: DATA_DIR });
+  console.log(
+    notifier
+      ? `Telegram: summary every ${notifier.settings.everyDays} days${notifier.settings.newVisitors ? ", plus a message per new visitor" : ""}`
+      : "Telegram: off (set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)",
+  );
 });
 
 for (const signal of ["SIGINT", "SIGTERM"]) {

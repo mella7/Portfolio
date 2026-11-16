@@ -244,7 +244,8 @@ export function privacyPage() {
       ${on
         ? html`<p>I run my own small statistics service to see which pages are read and where visitors come from. For each page view it stores: the time, the page, the site that linked here, the country (when available), device type, browser, operating system, language, time zone and a rough screen width. It also counts a few actions: downloads, links clicked, terminal commands (the command name only), homepage sections reached and time on the page.</p>
         <p>To count a visitor once per day, the server makes an anonymous id from your IP address, your browser and a random value that is replaced every day. The IP address itself is never stored, and visits on different days cannot be linked. No cookies are set and nothing is saved on your device for this.</p>
-        <p>If your browser sends "Do Not Track" or Global Privacy Control, nothing is recorded.</p>`
+        <p>When someone visits for the first time that day, I get a short message on Telegram with the same details: the page, the referring site, country, device, browser, language and time. It never contains an IP address or anything that identifies you. Every 15 days I also get a summary of the numbers.</p>
+        <p>If your browser sends "Do Not Track" or Global Privacy Control, nothing is recorded. You can also open any page with <code>?notrack</code> at the end of the address: this browser is then never counted (the choice is kept in local storage; <code>?track</code> undoes it).</p>`
         : html`<p>This site does not collect visitor statistics.</p>`}
       <h2>Saved on your device</h2>
       <p>Your choice of colour theme, light or dark mode and whether the walking avatar is shown are kept in your browser's local storage so they survive a reload. They never leave your device.</p>

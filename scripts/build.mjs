@@ -197,6 +197,11 @@ const pages = [
 rmSync(DIST, { recursive: true, force: true });
 cpSync(join(ROOT, "public"), DIST, { recursive: true });
 
+// The statistics dashboard (/stats). The Node server serves it from
+// server/dashboard itself; on Netlify it is a static page that talks to the
+// /api/stats function. Only built when statistics go to this same site.
+if (statsAccess?.api) cpSync(join(ROOT, "server", "dashboard"), join(DIST, "stats"), { recursive: true });
+
 write(`${assetDir}/site.css`, css);
 write(`${assetDir}/world.json`, worldData);
 for (const f of clientFiles) write(`${assetDir}/js/${f}`, read(SRC, "client", f));
@@ -240,7 +245,7 @@ write(
     `\n</urlset>\n`,
 );
 
-write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${abs("/sitemap.xml")}\n`);
+write("robots.txt", `User-agent: *\nAllow: /\nDisallow: /stats\n\nSitemap: ${abs("/sitemap.xml")}\n`);
 
 write(
   "rss.xml",
