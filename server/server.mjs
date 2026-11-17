@@ -40,7 +40,7 @@ import { fileURLToPath } from "node:url";
 
 import { BOT, MAX_BODY, describeAgent, firstLanguage, parseHit, qrCode, qrHit, qrRedirect } from "./core.mjs";
 import { loadEnv } from "./env.mjs";
-import { startNotifier } from "./notify.mjs";
+import { lastTelegramResult, notifySettings, sendTelegram, startNotifier, telegramConfig, telegramProblem } from "./notify.mjs";
 import { summarise } from "./stats.mjs";
 
 loadEnv(); // settings from .env, if present
@@ -140,6 +140,34 @@ function store(record) {
   });
 }
 
+// IP addresses are kept for STATS_IP_DAYS days (default 30), then removed
+// from the stored hits. Runs at start and every hour.
+const IP_DAYS = Number(process.env.STATS_IP_DAYS) > 0 ? Number(process.env.STATS_IP_DAYS) : 30;
+async function scrubOldIps() {
+  const cutoff = new Date(Date.now() - IP_DAYS * 86_400_000).toISOString();
+  await writing; // let pending writes finish first
+  for (const name of readdirSync(DATA_DIR)) {
+    if (!/^hits-\d{4}-\d{2}\.jsonl$/.test(name) || name.slice(5, 12) > cutoff.slice(0, 7)) continue;
+    const file = join(DATA_DIR, name);
+    const text = readFileSync(file, "utf8");
+    if (!text.includes('"ip":')) continue;
+    let changed = false;
+    const lines = text.split("\n").map((line) => {
+      if (!line.includes('"ip":')) return line;
+      try {
+        const hit = JSON.parse(line);
+        if (hit.ts >= cutoff) return line;
+        delete hit.ip;
+        changed = true;
+        return JSON.stringify(hit);
+      } catch {
+        return line;
+      }
+    });
+    if (changed) writeFileSync(file, lines.join("\n"), { mode: 0o600 });
+  }
+}
+
 function loadHits(sinceMs) {
   const hits = [];
   const firstMonth = new Date(sinceMs).toISOString().slice(0, 7);
@@ -185,6 +213,7 @@ function record(request, fields) {
   const hit = {
     ts: new Date().toISOString(),
     id,
+    ip: clientIp(request).replace(/^::ffff:/, "").slice(0, 45),
     country: country(request),
     ...describeAgent(ua),
     lang: firstLanguage(request.headers["accept-language"]),
@@ -254,19 +283,38 @@ function handleQr(request, response, url) {
 
 function authorised(request) {
   if (!STATS_TOKEN) return false;
-  const given = String(request.headers.authorization || "").replace(/^Bearer\s+/i, "");
+  const given = String(request.headers.authorization || "").replace(/^Bearer\s+/i, "").trim();
   // Compare digests so the comparison takes the same time for any input.
   const a = createHash("sha256").update(given).digest();
   const b = createHash("sha256").update(STATS_TOKEN).digest();
   return timingSafeEqual(a, b);
 }
 
-function handleStats(request, response, url) {
+async function handleStats(request, response, url) {
   if (!STATS_TOKEN) return json(response, 503, { error: "Statistics are disabled: set STATS_TOKEN to enable them." });
   if (!allowAuthTry(clientIp(request))) return json(response, 429, { error: "Too many attempts. Wait a minute." });
   if (!authorised(request)) return json(response, 401, { error: "Wrong token." });
+
+  if (request.method === "POST") {
+    const body = await readBody(request).catch(() => "");
+    let action = "";
+    try {
+      action = JSON.parse(body).action;
+    } catch {
+      /* not JSON */
+    }
+    if (action !== "telegram-test") return json(response, 400, { error: "Unknown action." });
+    const config = telegramConfig();
+    if (!config) return json(response, 200, { ok: false, description: telegramProblem(), hint: "Fix the variable, then restart the server." });
+    return json(response, 200, await sendTelegram(config, "Test message from your statistics dashboard. Telegram works."));
+  }
+
   const days = Math.min(365, Math.max(1, Number(url.searchParams.get("days")) || 30));
-  json(response, 200, summarise(loadHits(Date.now() - days * 86_400_000), days));
+  const settings = notifySettings();
+  json(response, 200, {
+    ...summarise(loadHits(Date.now() - days * 86_400_000), days),
+    telegram: { problem: telegramProblem(), last: lastTelegramResult(), newVisitors: settings.newVisitors, everyDays: settings.everyDays, lastSummary: null },
+  });
 }
 
 // ------------------------------------------------------------ static files
@@ -312,10 +360,13 @@ const server = createServer(async (request, response) => {
       if (request.method === "POST") return await handleHit(request, response);
       return send(response, 405, "method not allowed");
     }
+    if (path === "/api/stats") {
+      if (!["GET", "POST"].includes(request.method)) return send(response, 405, "method not allowed");
+      return await handleStats(request, response, url);
+    }
     if (request.method !== "GET" && request.method !== "HEAD") return send(response, 405, "method not allowed");
 
     if (path === "/qr" || path.startsWith("/qr/")) return handleQr(request, response, url);
-    if (path === "/api/stats") return handleStats(request, response, url);
     if (path === "/stats" || path === "/stats/") return serveFile(response, join(HERE, "dashboard", "index.html"));
     if (path.startsWith("/stats/")) {
       const asset = fileFor(join(HERE, "dashboard"), path.slice("/stats".length));
@@ -324,7 +375,10 @@ const server = createServer(async (request, response) => {
 
     const file = fileFor(SITE_DIR, path);
     if (file) return serveFile(response, file);
-    const notFound = join(SITE_DIR, "404.html");
+    // The "not found" page in the language of the address, English otherwise.
+    const langDir = /^\/(fr|de)(\/|$)/.exec(path)?.[1] ?? "";
+    const localNotFound = join(SITE_DIR, langDir, "404.html");
+    const notFound = existsSync(localNotFound) ? localNotFound : join(SITE_DIR, "404.html");
     return existsSync(notFound) ? serveFile(response, notFound, 404) : send(response, 404, "not found");
   } catch (error) {
     console.error("request failed:", error.message);
@@ -340,6 +394,9 @@ server.listen(PORT, HOST, () => {
   console.log(STATS_TOKEN ? `Stats: http://localhost:${PORT}/stats` : "Stats: disabled (set STATS_TOKEN to enable the dashboard)");
   if (STATS_TOKEN && STATS_TOKEN.length < 16) console.warn("Warning: STATS_TOKEN is short. Use at least 16 characters (npm run passkey).");
   notifier = startNotifier({ loadHits, dataDir: DATA_DIR });
+  const scrub = () => scrubOldIps().catch((error) => console.error("ip clean-up:", error.message));
+  scrub();
+  setInterval(scrub, 3_600_000).unref();
   console.log(
     notifier
       ? `Telegram: summary every ${notifier.settings.everyDays} days${notifier.settings.newVisitors ? ", plus a message per new visitor" : ""}`

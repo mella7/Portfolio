@@ -21,7 +21,7 @@ const bump = (map, key, by = 1) => {
 export function summarise(hits, days) {
   const tables = Object.fromEntries(
     ["pages", "referrers", "sources", "countries", "devices", "browsers", "systems", "languages", "timezones", "screens",
-     "events", "downloads", "outbound", "terminal", "sections", "qrCodes", "appearance"].map((name) => [name, new Map()]),
+     "events", "downloads", "outbound", "terminal", "sections", "qrCodes", "appearance", "ips", "siteLanguages"].map((name) => [name, new Map()]),
   );
   const perDay = new Map();
   const dayOf = (hit) => hit.ts.slice(0, 10);
@@ -58,9 +58,11 @@ export function summarise(hits, days) {
       bump(tables.languages, hit.lang);
       bump(tables.timezones, hit.tz);
       bump(tables.screens, hit.screen);
+      bump(tables.ips, hit.ip);
+      bump(tables.siteLanguages, /^\/fr(\/|$)/.test(hit.path) ? "French" : /^\/de(\/|$)/.test(hit.path) ? "German" : "English");
       recent.push({
-        ts: hit.ts, path: hit.path, country: hit.country || "", device: hit.device, browser: hit.browser, os: hit.os,
-        ref: hit.ref || "", src: hit.src || "",
+        ts: hit.ts, path: hit.path, ip: hit.ip || "", country: hit.country || "", device: hit.device, browser: hit.browser,
+        os: hit.os, lang: hit.lang || "", ref: hit.ref || "", src: hit.src || "",
       });
       continue;
     }
@@ -123,6 +125,6 @@ export function summarise(hits, days) {
     },
     perDay: [...perDay.values()],
     tables: Object.fromEntries(Object.entries(tables).map(([name, map]) => [name, top(map)])),
-    recent: recent.slice(-60).reverse(),
+    recent: recent.slice(-100).reverse(),
   };
 }

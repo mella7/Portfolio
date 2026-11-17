@@ -7,7 +7,7 @@
 //   4. Run it again with TELEGRAM_CHAT_ID set to receive a test message.
 
 import { loadEnv } from "./env.mjs";
-import { sendTelegram, telegramConfig } from "./notify.mjs";
+import { sendTelegram, telegramConfig, telegramProblem } from "./notify.mjs";
 
 loadEnv();
 const token = process.env.TELEGRAM_BOT_TOKEN || "";
@@ -18,10 +18,12 @@ if (!/^\d+:[\w-]{20,}$/.test(token)) {
 
 const config = telegramConfig();
 if (config) {
-  const ok = await sendTelegram(config, "Test message from your portfolio's statistics server. The connection works.");
-  console.log(ok ? "Test message sent. Check Telegram." : "The message was not accepted. Check TELEGRAM_CHAT_ID.");
-  process.exit(ok ? 0 : 1);
+  const result = await sendTelegram(config, "Test message from your portfolio's statistics server. The connection works.");
+  if (result.ok) console.log("Test message sent. Check Telegram.");
+  else console.log(`Telegram did not accept it: ${result.description}\n${result.hint || "Check TELEGRAM_CHAT_ID."}`);
+  process.exit(result.ok ? 0 : 1);
 }
+if (process.env.TELEGRAM_CHAT_ID) console.log(`${telegramProblem()}\n`);
 
 const api = (process.env.TELEGRAM_API_BASE || "https://api.telegram.org").replace(/\/+$/, "");
 try {

@@ -38,6 +38,17 @@
   </form>
 
   <div id="report" hidden>
+    <section class="panel tg" id="telegram" aria-label="Telegram">
+      <div class="tg__text">
+        <h2>Telegram</h2>
+        <p class="tg__state" id="tg-state"></p>
+        <p class="tg__detail" id="tg-detail"></p>
+      </div>
+      <div class="tg__actions">
+        <button type="button" id="tg-test">Send a test message</button>
+        <p class="tg__result" id="tg-result" role="status" aria-live="polite"></p>
+      </div>
+    </section>
     <section class="tiles" id="tiles" aria-label="Totals"></section>
     <section class="panel">
       <h2>Per day</h2>
@@ -47,9 +58,9 @@
     <section class="grid" id="tables"></section>
     <section class="panel">
       <h2>Latest page views</h2>
-      <div class="scroll"><table id="recent"><thead><tr><th>When</th><th>Page</th><th>Country</th><th>Device</th><th>Browser</th><th>From</th></tr></thead><tbody></tbody></table></div>
+      <div class="scroll"><table id="recent"><thead><tr><th>When</th><th>Page</th><th>IP address</th><th>Country</th><th>Device</th><th>Browser</th><th>Language</th><th>From</th></tr></thead><tbody></tbody></table></div>
     </section>
-    <p class="note">Visitors are counted once per day with an anonymous id that changes daily; no cookies and no IP addresses are stored. This shows what kind of visits you get, not who the people are.</p>
+    <p class="note">Visitors are counted once per day. IP addresses are kept for 30 days and then removed from the stored visits (STATS_IP_DAYS changes this). No cookies are used.</p>
   </div>
 </main>
 </body>

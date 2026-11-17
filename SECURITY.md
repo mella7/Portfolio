@@ -35,11 +35,14 @@ as I can and credit you if you would like.
 
 Both versions share `server/core.mjs` and follow the same rules:
 
-- **No personal data at rest.** IP addresses are hashed with a salt that is
-  replaced every day and are never written to disk. On Netlify the old salts
-  are deleted after two days. No cookies.
-- **Telegram messages** carry the same anonymous details as the dashboard
-  (page, referrer, country, device, language), never an IP address.
+- **IP addresses are kept for a limited time.** Each visit stores the IP
+  address for 30 days (`STATS_IP_DAYS`); after that it is removed from the
+  stored visits, on Netlify by the hourly `report` function and on the Node
+  server by an hourly clean-up. The daily visitor id is a hash with a salt
+  that is replaced every day; on Netlify old salts are deleted after two days.
+  No cookies. `/privacy/` tells visitors all of this.
+- **Telegram messages** carry the same details as the dashboard, including
+  the IP address. The bot token is never logged; Telegram's error text is.
 - **Input is untrusted.** Request bodies are capped at 4 KB, every field is
   type-checked, length-limited and stripped of control characters, and only
   simple keys are accepted.

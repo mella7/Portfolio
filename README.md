@@ -24,6 +24,10 @@ npm start        # build, then run the site with visitor statistics on :8080
 
 ## What is on the site
 
+Every page exists in English (`/`), French (`/fr/`) and German (`/de/`). The
+bar at the top links all pages and switches the language; see "Languages"
+below.
+
 | Page | Path | Notes |
 | --- | --- | --- |
 | Home | `/` | Opening animation, bento grid, photo strip, terminal, pinned highlights, horizontal projects, experience, skills, kind words, contact form |
@@ -59,7 +63,9 @@ server/
   dashboard/     the /stats page
 src/
   data/          site.mjs (settings) and content.mjs (everything the site says)
-  content/blog/  blog posts in Markdown
+  i18n/          the languages: interface text (ui.mjs) and the French and
+                 German content (content.fr.mjs, content.de.mjs)
+  content/blog/  blog posts in Markdown (<id>.md, <id>.fr.md, <id>.de.md)
   views/         page templates: layout, home, the other pages, cover diagrams
   lib/           html escaping, Markdown renderer, card-frame generator
   styles/        CSS, concatenated in the order listed in build.mjs
@@ -76,6 +82,28 @@ Almost everything is in two files:
   accent colours, visited countries.
 - `src/data/content.mjs`: intro text, highlights, projects, talks,
   experience, education, skills, certifications, photos, testimonials.
+
+When you change a text there, change it in the French and German files too
+(next section). Anything you leave out of a translation shows in English.
+
+### Languages
+
+| What | English | French and German |
+| --- | --- | --- |
+| About me: intro, projects, talks, jobs... | `src/data/content.mjs` | `src/i18n/content.fr.mjs`, `content.de.mjs` |
+| Buttons, headings, page texts, privacy page | `src/i18n/ui.mjs` (`en`) | same file (`fr`, `de`) |
+| Blog posts | `src/content/blog/<id>.md` | `<id>.fr.md`, `<id>.de.md` |
+
+- The translation files only hold the text that changes. Lists are matched by
+  position (experience, education...) or by slug, file or short name
+  (projects, talks, photos), so a new project needs an entry in all three
+  files only for its description.
+- A blog post without a `.fr.md` / `.de.md` shows the English text on the
+  French and German pages, with a short "written in English" note.
+- Talk titles, testimonials and the terminal stay in English on purpose.
+- The resume button in the top bar offers the resume in the page's language.
+- `src/i18n/index.mjs` lists the languages. To add one, add it to `LANGS`,
+  add its block to `ui.mjs` and a `content.<code>.mjs`.
 
 ### Resume files
 
@@ -118,6 +146,10 @@ Text of the post.
 The built-in renderer supports headings, paragraphs, bold, italic, inline
 code, links, images, fenced code blocks, lists, quotes and rules. Raw HTML is
 escaped on purpose.
+
+For the French and German versions, add `<id>.fr.md` and `<id>.de.md` with
+their own `title`, `description` and text; the date, link and categories come
+from the English file.
 
 ### The terminal
 
@@ -195,6 +227,9 @@ npm start
 The hidden word is only a shortcut, not protection: it ships inside the page.
 The passkey is the protection. It exists only on the server as `STATS_TOKEN`.
 
+After changing `STATS_TOKEN` (or any variable) in Netlify, trigger a new
+deploy: functions only see the values from the deploy they belong to.
+
 ### Telegram updates
 
 You get two kinds of messages:
@@ -220,18 +255,34 @@ Setting up the bot:
 4. `npm run telegram` again sends a test message. Copy both values into
    Netlify (or restart the server).
 
+**When no messages arrive**, open `/stats`. The Telegram panel at the top
+shows what is wrong in plain words: a variable that is missing or malformed,
+or Telegram's own answer to the last message (for example "chat not found"
+or "bot can't initiate conversation"), with what to do about it. "Send a test
+message" tries again right away. The same lines appear in the Netlify
+function log (Logs > Functions > hit or report) as `telegram: not delivered`.
+The usual causes:
+
+- you never pressed Start in the chat with the bot,
+- `TELEGRAM_CHAT_ID` is the bot's id (the number before the colon in the
+  token) instead of your own chat id,
+- the variables were changed in Netlify without a new deploy.
+
 **What you get**: visitors per day, page views, where visitors came from
 (referring site and `?utm_source=` / `?ref=` tags), country, device, browser,
 operating system, language, time zone, screen width, time on page, which
 homepage sections were reached, resume downloads, links clicked to other
 sites, terminal commands used, contact messages and QR scans.
 
-**What it does not do**: identify people. There are no cookies and the IP
-address is never stored. A visitor is counted once per day through a hash of
-IP + browser + a random salt that is thrown away every day. Visitors who send
-"Do Not Track" or Global Privacy Control are not recorded, and known bots are
-skipped. `/privacy/` explains this to visitors; keep it accurate if you
-change what is collected.
+**IP addresses** are stored with each visit and shown in the dashboard (a
+table of addresses and a column in the latest visits) and in the new-visitor
+messages. They are removed from the stored visits after 30 days
+(`STATS_IP_DAYS`). An IP address is personal data under the GDPR, so the
+privacy page says this, names the legal basis and offers deletion; keep it
+accurate if you change what is collected. There are no cookies. A visitor is
+counted once per day through a hash of IP + browser + a random salt that is
+thrown away every day. Visitors who send "Do Not Track" or Global Privacy
+Control are not recorded, and known bots are skipped.
 
 **Country** is only available when something in front of the server adds it:
 Cloudflare (`CF-IPCountry`), Vercel or Netlify headers are read automatically.
@@ -248,6 +299,7 @@ Cloudflare (`CF-IPCountry`), Vercel or Netlify headers are read automatically.
 | `REPORT_EVERY_DAYS` | Days between summaries | `15` |
 | `NOTIFY_NEW_VISITORS` | `0` stops the per-visitor messages | on |
 | `NOTIFY_TIMEZONE` | Time zone for the times in messages | `Europe/Berlin` |
+| `STATS_IP_DAYS` | Days IP addresses are kept | `30` |
 | `STATS_KEEP_DAYS` | Netlify only: days of hits to keep | `400` |
 
 ### QR codes

@@ -43,9 +43,12 @@
 @media (min-width: 1024px) {
   .bento {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(8, minmax(0, 1fr));
+    /* Fills the first screen (below the top bar and the notice strip), and
+       grows when a card needs more room, as the longer French and German
+       texts sometimes do. */
+    grid-template-rows: repeat(8, minmax(auto, 1fr));
     gap: 16px;
-    height: max(100vh - 38px, 840px);
+    min-height: max(100vh - 38px - var(--bar-h, 60px), 840px);
   }
   .card--intro {
     grid-column: span 3;
@@ -473,7 +476,8 @@
 /* --------------------------------------------- section nav (after the bento) */
 .snav {
   position: fixed;
-  top: 12px;
+  /* Just below the top bar while it shows, at the very top once it slides away. */
+  top: calc(var(--bar-h, 60px) + 8px);
   left: 50%;
   translate: -50% -14px;
   z-index: 90;
@@ -490,7 +494,10 @@
   border-radius: 999px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  transition: opacity 0.3s, translate 0.3s;
+  transition: opacity 0.3s, translate 0.3s, top 0.3s ease;
+}
+.bar-hidden .snav {
+  top: 12px;
 }
 .snav.is-on {
   opacity: 1;

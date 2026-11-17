@@ -3,7 +3,7 @@
 // request fails, the visitor is pointed to the e-mail address instead, so a
 // message is never silently lost.
 
-import { $ } from "./util.js";
+import { $, ui } from "./util.js";
 
 export function initForm() {
   const form = $("[data-contact-form]");
@@ -24,13 +24,13 @@ export function initForm() {
     const data = new FormData(form);
     // Honeypot: real visitors never see this field, so a value means a bot.
     if (data.get("bot-field")) {
-      say("Thanks, got it.", "ok");
+      say(ui("gotIt"), "ok");
       form.reset();
       return;
     }
 
     submit.disabled = true;
-    say("Sending...");
+    say(ui("sending"));
     try {
       const response = await fetch(form.action, {
         method: "POST",
@@ -38,11 +38,11 @@ export function initForm() {
         body: new URLSearchParams(data).toString(),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      say("Thanks, your message is on its way. I'll reply by e-mail.", "ok");
+      say(ui("sent"), "ok");
       document.dispatchEvent(new CustomEvent("track", { detail: { name: "contact", data: {} } }));
       form.reset();
     } catch {
-      say(`That did not go through. Please e-mail ${email} instead.`, "error");
+      say(ui("failed", { email }), "error");
     } finally {
       submit.disabled = false;
     }

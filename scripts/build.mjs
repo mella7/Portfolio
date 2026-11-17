@@ -13,7 +13,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { SITE, THEMES, MODES } from "../src/data/site.mjs";
-import * as C from "../src/data/content.mjs";
+import * as EN from "../src/data/content.mjs";
+import { C, LANGS, lang, prefixFor, setLang, t } from "../src/i18n/index.mjs";
 import { escapeHtml } from "../src/lib/html.mjs";
 import { parseFrontMatter, renderMarkdown, readingMinutes } from "../src/lib/markdown.mjs";
 import { frameVars, frameImage, cssBlock } from "../src/lib/nine-slice.mjs";
@@ -71,7 +72,7 @@ function generatedCss() {
     );
   }
   // The photo strip moves at a constant speed: 4 seconds per slide.
-  const counts = new Set([C.testimonials.length, C.moments.filter((m) => m.w > m.h).slice(0, 12).length]);
+  const counts = new Set([EN.testimonials.length, EN.moments.filter((m) => m.w > m.h).slice(0, 12).length]);
   for (const n of counts) out.push(`.slideshow__track--${n}{animation-duration:${n * 4}s}`);
   return out.join("\n");
 }
@@ -100,8 +101,10 @@ const assets = {
 // Country outlines for the globe on /travel, cut down to what it needs:
 // outer rings only, one decimal place (about 11 km), no repeated points.
 
+const worldFeatures = JSON.parse(read(SRC, "data", "world.json")).features;
+const worldNames = worldFeatures.map((feature) => feature.properties.name);
 const worldData = JSON.stringify(
-  JSON.parse(read(SRC, "data", "world.json")).features.map((feature) => {
+  worldFeatures.map((feature) => {
     const polygons = feature.geometry.type === "Polygon" ? [feature.geometry.coordinates] : feature.geometry.coordinates;
     const rings = polygons
       .map((polygon) => {
@@ -121,23 +124,43 @@ const worldData = JSON.stringify(
 
 // -------------------------------------------------------------------- blog
 
-const posts = readdirSync(join(SRC, "content", "blog"))
-  .filter((f) => f.endsWith(".md") && !f.startsWith("_"))
-  .map((file) => {
-    const { data, body } = parseFrontMatter(read(SRC, "content", "blog", file));
-    if (!data.title || !data.pubDate) throw new Error(`${file}: front matter needs "title" and "pubDate"`);
-    return {
-      id: file.replace(/\.md$/, ""),
-      title: data.title,
-      description: data.description ?? "",
-      date: data.pubDate,
-      link: data.link,
-      categories: Array.isArray(data.categories) ? data.categories : [],
+// Each post is <id>.md in English. <id>.fr.md and <id>.de.md, when present,
+// are the translations; without one, the French or German page shows the
+// English text with a note. Front matter missing from a translation (date,
+// link, categories) comes from the English file.
+const BLOG = join(SRC, "content", "blog");
+const postFiles = readdirSync(BLOG).filter((f) => f.endsWith(".md") && !f.startsWith("_"));
+function readPost(file, fallback = {}) {
+  const { data, body } = parseFrontMatter(read(BLOG, file));
+  const merged = { ...fallback.data, ...data };
+  if (!merged.title || !merged.pubDate) throw new Error(`${file}: front matter needs "title" and "pubDate"`);
+  return {
+    data: merged,
+    post: {
+      id: file.replace(/(\.(fr|de))?\.md$/, ""),
+      title: merged.title,
+      description: merged.description ?? "",
+      date: merged.pubDate,
+      link: merged.link,
+      categories: Array.isArray(merged.categories) ? merged.categories : [],
       minutes: readingMinutes(body),
       html: renderMarkdown(body),
-    };
-  })
-  .sort((a, b) => b.date.localeCompare(a.date));
+    },
+  };
+}
+const postsByLang = { en: [], fr: [], de: [] };
+for (const file of postFiles.filter((f) => !/\.(fr|de)\.md$/.test(f))) {
+  const english = readPost(file);
+  postsByLang.en.push({ ...english.post, lang: "en" });
+  for (const code of ["fr", "de"]) {
+    const translated = file.replace(/\.md$/, `.${code}.md`);
+    postsByLang[code].push(
+      postFiles.includes(translated) ? { ...readPost(translated, english).post, lang: code } : { ...english.post, lang: "en" },
+    );
+  }
+}
+for (const list of Object.values(postsByLang)) list.sort((a, b) => b.date.localeCompare(a.date));
+const posts = postsByLang.en;
 
 // ---------------------------------------------------------------- terminal
 // Everything the terminal can print. It ships as JSON so the shell never
@@ -152,16 +175,18 @@ const statsAccess = !statsEndpoint || !SITE.statsCommand
     ? { command: SITE.statsCommand.toLowerCase(), api: `${BASE}/api/stats`, page: `${BASE}/stats` }
     : { command: SITE.statsCommand.toLowerCase(), api: null, page: `${new URL(statsEndpoint).origin}/stats` };
 
-const termData = {
+// Built per language: the about text, projects and so on follow the page;
+// the terminal's own messages stay in English.
+const termDataFor = () => ({
   base: BASE,
   stats: statsAccess,
   name: SITE.author.fullName,
-  title: SITE.author.jobTitle,
-  location: SITE.location.label,
+  title: C.site.jobTitle,
+  location: C.site.location.label,
   email: SITE.links.email,
   links: { github: SITE.links.github, linkedin: SITE.links.linkedin, medium: SITE.links.medium },
   resume: Object.fromEntries(SITE.resume.map((r) => [r.lang, SITE.url + BASE + r.file])),
-  now: SITE.now.text,
+  now: C.site.now.text,
   about: C.intro.paragraphs,
   stack: C.stack.map((g) => [g.group, g.items.join(", ")]),
   projects: C.projects.map((p) => ({ name: p.name, year: p.year, text: p.description, stack: p.stack.join(" · "), repo: p.repo })),
@@ -171,25 +196,30 @@ const termData = {
   jobs: C.experience.map((j) => [`${j.start} - ${j.end}`, j.title, j.company]),
   languages: C.languages.map((l) => [l.name, l.level]),
   countries: SITE.visitedCountries,
-  posts: posts.map((p) => ({ id: p.id, title: p.title })),
+  posts: postsByLang[lang].map((p) => ({ id: p.id, title: p.title })),
   moments: C.moments.length,
-  themes: THEMES.map((t) => t.id),
-  pages: { home: "/", projects: "/projects/", talks: "/talks/", certs: "/certifications/", certifications: "/certifications/", moments: "/moments/", blog: "/blog/", travel: "/travel/", contact: "/#contact" },
-};
+  themes: THEMES.map((th) => th.id),
+  pages: Object.fromEntries(
+    Object.entries({ home: "/", projects: "/projects/", talks: "/talks/", certs: "/certifications/", certifications: "/certifications/", moments: "/moments/", blog: "/blog/", travel: "/travel/", contact: "/#contact" })
+      .map(([key, path]) => [key, prefixFor(lang) + path]),
+  ),
+});
 
 // ------------------------------------------------------------------- pages
 
-const pages = [
-  { path: "/", home: true, title: SITE.title, description: SITE.description, body: homePage(), jsonLd: homeJsonLd() },
-  { path: "/projects/", title: "Projects", description: "Kubernetes operators, container networking, provisioning tools and security projects by Mohamed Ali Mellah.", body: P.projectsPage() },
-  { path: "/talks/", title: "Talks", description: "Conference talks by Mohamed Ali Mellah, with slides: ContainerDays Hamburg and Cloud Identity Summit 2026.", body: P.talksPage() },
-  ...C.talks.map((t) => ({ path: `/talks/${t.slug}/`, title: t.shortTitle, description: t.description, body: P.talkPage(t), image: `${t.slidesDir}/01-1600.webp` })),
-  { path: "/certifications/", title: "Certifications", description: "CKA, CKAD, RHCSA, eJPT, AWS and Cisco certifications held by Mohamed Ali Mellah.", body: P.certificationsPage() },
-  { path: "/moments/", title: "Moments", description: "Photos from talks, competitions and university.", body: P.momentsPage() },
-  { path: "/blog/", title: "Blog", description: "Notes on Kubernetes security, DevSecOps and platform engineering.", body: P.blogPage(posts) },
-  ...posts.map((post) => ({ path: `/blog/${post.id}/`, title: post.title, description: post.description, body: P.postPage(post) })),
-  { path: "/travel/", title: "Travel", description: `${SITE.visitedCountries.length} countries visited so far. Drag the globe to spin it.`, body: P.travelPage(u(`${assetDir}/world.json`)) },
-  { path: "/privacy/", title: "Privacy", description: "What this site records about a visit: no cookies, anonymous statistics.", body: P.privacyPage() },
+// Every page, in the language set with setLang(). Paths are without the
+// language; the layout and u() add "/fr" or "/de".
+const pagesFor = () => [
+  { path: "/", home: true, title: SITE.title, description: C.site.description, body: homePage(), jsonLd: homeJsonLd() },
+  { path: "/projects/", title: t("nav.projects"), description: t("pages.projects.description"), body: P.projectsPage() },
+  { path: "/talks/", title: t("nav.talks"), description: t("pages.talks.description"), body: P.talksPage() },
+  ...C.talks.map((talk) => ({ path: `/talks/${talk.slug}/`, title: talk.shortTitle, description: talk.description, body: P.talkPage(talk), image: `${talk.slidesDir}/01-1600.webp` })),
+  { path: "/certifications/", title: t("nav.certs"), description: t("pages.certs.description"), body: P.certificationsPage() },
+  { path: "/moments/", title: t("nav.moments"), description: t("pages.moments.description"), body: P.momentsPage() },
+  { path: "/blog/", title: t("nav.blog"), description: t("pages.blog.description"), body: P.blogPage(postsByLang[lang]) },
+  ...postsByLang[lang].map((post) => ({ path: `/blog/${post.id}/`, title: post.title, description: post.description, body: P.postPage(post) })),
+  { path: "/travel/", title: t("nav.travel"), description: t("pages.travel.description", SITE.visitedCountries.length), body: P.travelPage(u(`${assetDir}/world.json`), worldNames) },
+  { path: "/privacy/", title: t("footer.privacy"), description: t("pages.privacy.description"), body: P.privacyPage() },
 ];
 
 // ------------------------------------------------------------------- write
@@ -206,13 +236,25 @@ write(`${assetDir}/site.css`, css);
 write(`${assetDir}/world.json`, worldData);
 for (const f of clientFiles) write(`${assetDir}/js/${f}`, read(SRC, "client", f));
 
-for (const page of pages) {
-  write(join(page.path, "index.html"), String(layout({ ...page, assets, termData })));
+const sitemap = [];
+let pageCount = 0;
+for (const { code } of LANGS) {
+  setLang(code);
+  const termData = termDataFor();
+  const prefix = prefixFor(code);
+  for (const page of pagesFor()) {
+    write(join(prefix, page.path, "index.html"), String(layout({ ...page, assets, termData })));
+    if (code === "en") sitemap.push(page.path);
+    pageCount++;
+  }
+  // One "not found" page per language. Netlify serves /404.html; _redirects
+  // (below) sends missing /fr/ and /de/ addresses to their own.
+  write(
+    join(prefix, "404.html"),
+    String(layout({ path: "/404.html", title: "404", description: t("pages.notFound.title"), body: P.notFoundPage(), assets, termData, alternates: false })),
+  );
 }
-write(
-  "404.html",
-  String(layout({ path: "/404.html", title: "Not found", description: "This page does not exist.", body: P.notFoundPage(), assets, termData })),
-);
+setLang("en");
 
 // /qr: the address behind a printed QR code. It reports the scan and always
 // goes on to the homepage. Kept tiny so it loads instantly; the meta refresh
@@ -238,12 +280,21 @@ write(
 
 const abs = (path) => SITE.url + BASE + path;
 
+// Every page in every language, each listing its translations.
+const sitemapEntry = (path) => {
+  const links = LANGS.map((l) => `    <xhtml:link rel="alternate" hreflang="${l.code}" href="${escapeHtml(abs(prefixFor(l.code) + path))}"/>`).join("\n");
+  return LANGS.map((l) => `  <url>\n    <loc>${escapeHtml(abs(prefixFor(l.code) + path))}</loc>\n${links}\n  </url>`).join("\n");
+};
 write(
   "sitemap.xml",
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    pages.map((p) => `  <url><loc>${escapeHtml(abs(p.path))}</loc></url>`).join("\n") +
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
+    sitemap.map(sitemapEntry).join("\n") +
     `\n</urlset>\n`,
 );
+
+// Missing pages under /fr/ and /de/ get the "not found" page in that
+// language. Netlify only applies these when no file exists at the address.
+write("_redirects", LANGS.filter((l) => l.code !== "en").map((l) => `${BASE}/${l.code}/*  ${BASE}/${l.code}/404.html  404`).join("\n") + "\n");
 
 write("robots.txt", `User-agent: *\nAllow: /\nDisallow: /stats\n\nSitemap: ${abs("/sitemap.xml")}\n`);
 
@@ -286,4 +337,4 @@ write(
   ].join("\n"),
 );
 
-console.log(`Built ${pages.length + 1} pages into dist/ (assets ${version}${BASE ? `, base ${BASE}` : ""})`);
+console.log(`Built ${pageCount} pages in ${LANGS.length} languages into dist/ (assets ${version}${BASE ? `, base ${BASE}` : ""})`);

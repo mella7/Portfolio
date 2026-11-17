@@ -6,6 +6,20 @@ export const finePointer = window.matchMedia("(pointer: fine)").matches;
 export const base = root.dataset.base || "";
 
 export const $ = (selector, scope = document) => scope.querySelector(selector);
+
+// Interface text in the page's language, written into the page by the build
+// (src/i18n/ui.mjs, "client"). {name} placeholders are filled from `vars`.
+let uiText = null;
+export function ui(key, vars = {}) {
+  if (!uiText) {
+    try {
+      uiText = JSON.parse(document.getElementById("ui-text")?.textContent || "{}");
+    } catch {
+      uiText = {};
+    }
+  }
+  return String(uiText[key] ?? key).replace(/\{(\w+)\}/g, (_, name) => String(vars[name] ?? ""));
+}
 export const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 

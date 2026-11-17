@@ -50,17 +50,34 @@ button:hover, select:hover { border-color: var(--accent); }
 .key--views { background: var(--accent); }
 .key--qr { background: var(--second); }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 16px; }
-.grid .panel { margin: 0; }
+/* min-width: 0 lets a panel and its labels shrink, so a long URL is cut
+   with "..." inside its own card instead of running into the next one. */
+.grid .panel { margin: 0; min-width: 0; overflow: hidden; }
 .rows { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
-.rows li { position: relative; display: flex; justify-content: space-between; gap: 12px; padding: 4px 8px; font-size: 14px; }
+.rows li { position: relative; display: flex; align-items: baseline; gap: 12px; padding: 4px 8px; font-size: 14px; min-width: 0; }
 .rows li i { position: absolute; inset: 0 auto 0 0; background: rgba(230, 57, 70, 0.18); border-radius: 4px; }
 .rows li span, .rows li b { position: relative; }
-.rows li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rows li b { font-variant-numeric: tabular-nums; font-weight: 600; }
+.rows li span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rows li b { flex: none; font-variant-numeric: tabular-nums; font-weight: 600; }
+.rows li a { color: inherit; }
+.mono { font-family: var(--mono); font-size: 13px; }
+
+.tg { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.tg__text { min-width: 0; flex: 1 1 420px; }
+.tg h2 { margin-bottom: 4px; }
+.tg__state { margin: 0; font-weight: 600; }
+.tg__state::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 8px; border-radius: 50%; background: var(--muted); }
+.tg__state.is-ok::before { background: var(--second); }
+.tg__state.is-bad::before { background: var(--accent); }
+.tg__detail, .tg__result { margin: 2px 0 0; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.tg__actions { display: grid; gap: 4px; justify-items: end; max-width: 100%; }
+.tg__result.is-bad { color: #f3a3aa; }
+.tg__result.is-ok { color: #a5d6a7; }
 .empty { color: var(--muted); font-size: 14px; margin: 0; }
 .scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
 th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
 td { font-variant-numeric: tabular-nums; }
 .note { color: var(--muted); font-size: 13px; max-width: 70ch; }

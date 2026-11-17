@@ -6,10 +6,11 @@
 //   - After that, a summary every REPORT_EVERY_DAYS days (default 15).
 //   - Deletes salts and "seen" markers older than yesterday, and hits older
 //     than STATS_KEEP_DAYS (default 400).
+//   - Removes IP addresses from hits older than STATS_IP_DAYS (default 30).
 
 import { summarise } from "../../server/stats.mjs";
-import { helloText, notifySettings, reportText, sendTelegram, telegramConfig } from "../../server/notify.mjs";
-import { DAY, compactHits, dayOf, loadHits, statsStore } from "../lib/stats-store.mjs";
+import { helloText, notifySettings, reportText, telegramConfig, telegramProblem } from "../../server/notify.mjs";
+import { DAY, compactHits, dayOf, loadHits, statsStore, telegram } from "../lib/stats-store.mjs";
 
 async function cleanUp(store) {
   const yesterday = dayOf(Date.now() - DAY);
@@ -24,6 +25,29 @@ async function cleanUp(store) {
     const { blobs } = await store.list({ prefix });
     const old = blobs.filter((blob) => tooOld(blob.key.slice(prefix.length, prefix.length + 10)));
     for (let i = 0; i < old.length; i += 20) await Promise.all(old.slice(i, i + 20).map((blob) => store.delete(blob.key)));
+  }
+
+  // IP addresses are only kept for a limited time.
+  const ipDays = Number(process.env.STATS_IP_DAYS) > 0 ? Number(process.env.STATS_IP_DAYS) : 30;
+  const lastIpDay = dayOf(Date.now() - ipDays * DAY);
+  const { blobs } = await store.list({ prefix: "hits/" });
+  for (const blob of blobs) {
+    if (blob.key.slice(5, 15) >= lastIpDay) continue;
+    const text = await store.get(blob.key, { type: "text" });
+    if (!text || !text.includes('"ip":')) continue;
+    const scrubbed = text
+      .split("\n")
+      .map((line) => {
+        if (!line.includes('"ip":')) return line;
+        try {
+          const { ip, ...rest } = JSON.parse(line);
+          return JSON.stringify(rest);
+        } catch {
+          return "";
+        }
+      })
+      .join("\n");
+    await store.set(blob.key, scrubbed);
   }
 }
 
@@ -41,21 +65,25 @@ export default async () => {
   }
 
   const config = telegramConfig();
-  if (!config) return new Response("Telegram is not set up.");
+  if (!config) {
+    const problem = telegramProblem();
+    if (problem && problem !== "TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are not set.") console.error(`telegram: off. ${problem}`);
+    return new Response(`Telegram is not set up: ${problem}`);
+  }
   const settings = notifySettings();
   const now = Date.now();
   const state = (await store.get("state/notify", { type: "json" })) || { lastReport: 0 };
 
   if (!state.lastReport) {
-    if (await sendTelegram(config, helloText(settings))) await store.setJSON("state/notify", { lastReport: now });
-    return new Response("Hello sent.");
+    const result = await telegram(store, config, helloText(settings));
+    if (result.ok) await store.setJSON("state/notify", { lastReport: now });
+    return new Response(result.ok ? "Hello sent." : `Hello not delivered: ${result.description}`);
   }
   if (now - state.lastReport >= settings.everyDays * DAY) {
     const summary = summarise(await loadHits(store, now - settings.everyDays * DAY), Math.max(1, Math.ceil(settings.everyDays)));
-    if (await sendTelegram(config, reportText(settings.site, summary, settings.everyDays))) {
-      await store.setJSON("state/notify", { lastReport: now });
-    }
-    return new Response("Summary sent.");
+    const result = await telegram(store, config, reportText(settings.site, summary, settings.everyDays));
+    if (result.ok) await store.setJSON("state/notify", { lastReport: now });
+    return new Response(result.ok ? "Summary sent." : `Summary not delivered: ${result.description}`);
   }
   return new Response("Nothing due.");
 };

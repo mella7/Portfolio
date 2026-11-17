@@ -10,7 +10,7 @@
 //   3. A 4x4 Bayer pattern and a light direction decide which pixels are lit,
 //      which gives the same dot-matrix shading as the avatar.
 
-import { $, $$, clamp, reduceMotion, root } from "./util.js";
+import { $, $$, clamp, reduceMotion, root, ui } from "./util.js";
 
 const MAP_W = 1024;
 const MAP_H = 512;
@@ -86,6 +86,13 @@ export async function initGlobe() {
   const ctx = canvas.getContext("2d");
   const visitedNames = JSON.parse(wrap.dataset.visited);
   const visitedSet = new Set(visitedNames);
+  // Country names in the page's language, keyed by the English name.
+  let localName = {};
+  try {
+    localName = JSON.parse(wrap.dataset.names || "{}");
+  } catch {
+    /* English names it is */
+  }
 
   let world;
   try {
@@ -281,7 +288,8 @@ export async function initGlobe() {
       tooltip.hidden = true;
       return;
     }
-    tooltip.textContent = visitedSet.has(name) ? `${name} · visited` : name;
+    const label = localName[name] ?? name;
+    tooltip.textContent = visitedSet.has(name) ? `${label} · ${ui("visited")}` : label;
     tooltip.classList.toggle("is-visited", visitedSet.has(name));
     tooltip.hidden = false;
     const wrapBox = wrap.getBoundingClientRect();

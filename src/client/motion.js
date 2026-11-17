@@ -2,7 +2,7 @@
 // scroll, heading "decode", count-up numbers, pointer spotlight and tilt on
 // cards, magnetic buttons, the experience timeline, and the section nav.
 
-import { $, $$, clamp, finePointer, onScrollFrame, reduceMotion } from "./util.js";
+import { $, $$, clamp, finePointer, onScrollFrame, reduceMotion, ui } from "./util.js";
 
 const GLYPHS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#$%&/<>";
 
@@ -122,6 +122,28 @@ function initPointerEffects() {
   }
 }
 
+// The top bar slides away while reading down the page and comes back as soon
+// as the visitor scrolls up, or tabs into it. Its height is shared as --bar-h
+// so the homepage's section nav can sit just below it.
+function initTopbar() {
+  const bar = $("#topbar");
+  if (!bar) return;
+  const root = document.documentElement;
+  let last = window.scrollY;
+  const measure = () => root.style.setProperty("--bar-h", `${bar.offsetHeight}px`);
+  measure();
+  window.addEventListener("resize", measure);
+  onScrollFrame(() => {
+    const y = window.scrollY;
+    const delta = y - last;
+    if (Math.abs(delta) < 6) return;
+    const hide = delta > 0 && y > bar.offsetHeight * 2 && !bar.contains(document.activeElement);
+    root.classList.toggle("bar-hidden", hide);
+    last = y;
+  });
+  bar.addEventListener("focusin", () => root.classList.remove("bar-hidden"));
+}
+
 function initScrollState() {
   const bar = $("#progress");
   const nav = $("#snav");
@@ -161,13 +183,14 @@ function initCopy() {
       } catch {
         ok = false;
       }
-      label.textContent = ok ? "Copied" : "Select the address to copy";
+      label.textContent = ok ? ui("copied") : ui("copyFailed");
       window.setTimeout(() => (label.textContent = original), 1800);
     });
   }
 }
 
 export function initMotion() {
+  initTopbar();
   initScrollState();
   initReveal();
   initPointerEffects();

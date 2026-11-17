@@ -367,11 +367,16 @@ a:hover > .more .icon {
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 60;
+  z-index: 95;
   background: var(--glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
+  transition: translate 0.3s ease;
+}
+/* Hidden while reading down the page; back on the way up (motion.js). */
+.bar-hidden .topbar {
+  translate: 0 -100%;
 }
 .topbar__in {
   display: flex;
@@ -392,9 +397,40 @@ a:hover > .more .icon {
 }
 .topnav {
   display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  min-width: 0;
   gap: 2px;
   overflow-x: auto;
   scrollbar-width: none;
+}
+.topbar__end {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+/* EN / FR / DE */
+.langs {
+  display: flex;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.langs a {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font: 600 11px/1.5 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  transition: color 0.15s, background-color 0.2s;
+}
+.langs a:hover {
+  color: var(--text);
+}
+.langs a[aria-current="true"] {
+  background: var(--a);
+  color: var(--on-a);
 }
 .topnav a {
   padding: 6px 11px;
@@ -410,6 +446,25 @@ a:hover > .more .icon {
   color: var(--text);
   box-shadow: inset 0 -2px 0 var(--a);
 }
+/* Narrow screens: logo, languages and resume on the first row, the pages
+   on a second row that scrolls sideways. */
+@media (max-width: 900px) {
+  .topbar__in {
+    flex-wrap: wrap;
+    row-gap: 2px;
+    min-height: 0;
+    padding-top: 8px;
+  }
+  .topnav {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: flex-start;
+    margin-inline: -11px;
+    padding-bottom: 2px;
+    -webkit-mask-image: linear-gradient(to right, #000 88%, transparent);
+    mask-image: linear-gradient(to right, #000 88%, transparent);
+  }
+}
 @media (max-width: 640px) {
   .topbar .btn span {
     display: none;
@@ -417,6 +472,22 @@ a:hover > .more .icon {
   .topbar .btn {
     padding-inline: 12px;
   }
+}
+
+/* A short note on French and German pages whose material is in English. */
+.lang-note {
+  margin: -8px 0 24px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.lang-note::before {
+  content: "EN";
+  margin-right: 8px;
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font: 600 10px/1.6 var(--mono);
+  letter-spacing: 0.06em;
 }
 
 .footer {

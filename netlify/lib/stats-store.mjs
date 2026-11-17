@@ -8,17 +8,20 @@
 //   salt/YYYY-MM-DD        that day's random salt for the visitor ids
 //   seen/YYYY-MM-DD/<id>   visitors already announced on Telegram that day
 //   state/notify           when the last Telegram summary went out
+//   state/telegram         what Telegram answered the last time
 //
-// Salts and "seen" markers are deleted after two days by report.mjs, so a
-// visitor id cannot be recomputed later and visits on different days cannot
-// be linked. IP addresses are never stored.
+// Salts and "seen" markers are deleted after two days by report.mjs. IP
+// addresses are kept with each hit for STATS_IP_DAYS days (default 30), then
+// report.mjs removes them from the stored hits.
 
 import { createHash, randomBytes } from "node:crypto";
 
 import { getStore } from "@netlify/blobs";
 
-import { BOT, describeAgent, firstLanguage } from "../../server/core.mjs";
-import { newVisitorText, notifySettings, sendTelegram, telegramConfig } from "../../server/notify.mjs";
+import { BOT, clean, describeAgent, firstLanguage } from "../../server/core.mjs";
+import {
+  newVisitorText, notifySettings, sendTelegram, telegramConfig, telegramProblem,
+} from "../../server/notify.mjs";
 
 export const DAY = 86_400_000;
 export const dayOf = (ms = Date.now()) => new Date(ms).toISOString().slice(0, 10);
@@ -180,6 +183,7 @@ export async function recordHit(request, context, fields) {
   const hit = {
     ts: new Date().toISOString(),
     id,
+    ip: clean(context.ip || "", 45),
     country: /^[A-Za-z]{2}$/.test(code || "") ? code.toUpperCase() : "",
     ...describeAgent(ua),
     lang: firstLanguage(request.headers.get("accept-language")),
@@ -203,5 +207,34 @@ async function announce(store, hit) {
   } catch {
     /* the count is a nice-to-have */
   }
-  await sendTelegram(config, newVisitorText(settings, hit, nth));
+  await telegram(store, config, newVisitorText(settings, hit, nth));
+}
+
+// ------------------------------------------------------------- telegram
+
+/** Sends a message and keeps Telegram's answer for the dashboard. */
+export async function telegram(store, config, text) {
+  const result = await sendTelegram(config, text);
+  try {
+    await store.setJSON("state/telegram", result);
+  } catch {
+    /* the status is a nice-to-have */
+  }
+  return result;
+}
+
+/** What the dashboard shows about Telegram. */
+export async function telegramStatus(store) {
+  const settings = notifySettings();
+  const [last, notify] = await Promise.all([
+    store.get("state/telegram", { type: "json" }).catch(() => null),
+    store.get("state/notify", { type: "json" }).catch(() => null),
+  ]);
+  return {
+    problem: telegramProblem(),
+    last: last || null,
+    newVisitors: settings.newVisitors,
+    everyDays: settings.everyDays,
+    lastSummary: notify?.lastReport ? new Date(notify.lastReport).toISOString() : null,
+  };
 }

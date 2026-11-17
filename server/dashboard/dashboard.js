@@ -13,9 +13,11 @@ const KEY = "stats-token";
 
 const TABLES = [
   ["pages", "Pages"],
+  ["siteLanguages", "Site language read"],
   ["referrers", "Where visitors came from"],
   ["sources", "Campaign or source tag"],
   ["countries", "Countries"],
+  ["ips", "IP addresses (page views)"],
   ["devices", "Devices"],
   ["browsers", "Browsers"],
   ["systems", "Operating systems"],
@@ -36,6 +38,47 @@ function el(tag, className, text) {
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
+}
+
+// "https://medium.com/@me/post" reads better as "medium.com/@me/post".
+const shortUrl = (value) => String(value).replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+
+function ago(iso) {
+  const minutes = Math.round((Date.now() - Date.parse(iso)) / 60_000);
+  if (!Number.isFinite(minutes)) return "";
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes} min ago`;
+  if (minutes < 48 * 60) return `${Math.round(minutes / 60)} h ago`;
+  return `${Math.round(minutes / 1440)} days ago`;
+}
+
+function renderTelegram(tg) {
+  const state = $("tg-state");
+  const detail = $("tg-detail");
+  if (!tg) {
+    state.textContent = "No status from the server.";
+    state.className = "tg__state";
+    detail.textContent = "";
+    return;
+  }
+  const plan = `Summary every ${tg.everyDays} days${tg.newVisitors ? ", plus a message for each new visitor" : ""}.`;
+  if (tg.problem) {
+    state.textContent = "Not set up correctly";
+    state.className = "tg__state is-bad";
+    detail.textContent = tg.problem;
+  } else if (tg.last && !tg.last.ok) {
+    state.textContent = `Last message was not delivered (${ago(tg.last.at)})`;
+    state.className = "tg__state is-bad";
+    detail.textContent = `Telegram said: ${tg.last.description}. ${tg.last.hint || ""}`;
+  } else if (tg.last) {
+    state.textContent = `Working. Last message delivered ${ago(tg.last.at)}.`;
+    state.className = "tg__state is-ok";
+    detail.textContent = plan;
+  } else {
+    state.textContent = "Set up, nothing sent yet";
+    state.className = "tg__state";
+    detail.textContent = `${plan} Use the button to check the connection now.`;
+  }
 }
 
 const duration = (seconds) => (seconds >= 60 ? `${Math.floor(seconds / 60)}m ${Math.round(seconds % 60)}s` : `${Math.round(seconds)}s`);
@@ -87,8 +130,9 @@ function render(data) {
         const item = el("li");
         const fill = el("i");
         fill.style.width = `${(row.count / max) * 100}%`;
-        item.append(fill, el("span", "", String(row.label)), el("b", "", String(row.count)));
-        item.title = String(row.label);
+        const label = key === "outbound" ? shortUrl(row.label) : String(row.label);
+        item.append(fill, el("span", key === "ips" ? "mono" : "", label), el("b", "", String(row.count)));
+        item.title = `${row.label}: ${row.count}`;
         list.append(item);
       }
       panel.append(list);
@@ -104,12 +148,16 @@ function render(data) {
       for (const value of [
         when.toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" }),
         r.path,
+        r.ip || "-",
         r.country || "-",
         `${r.device} · ${r.os}`,
         r.browser,
+        r.lang || "-",
         r.src || r.ref || "direct",
       ]) {
-        row.append(el("td", "", value));
+        const cell = el("td", "", value);
+        cell.title = value;
+        row.append(cell);
       }
       return row;
     }),
@@ -135,6 +183,7 @@ async function load(token) {
   }
   status.textContent = "";
   render(data);
+  renderTelegram(data.telegram);
   login.hidden = true;
   report.hidden = false;
   controls.hidden = false;
@@ -151,7 +200,7 @@ function saved() {
 
 login.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const token = $("token").value;
+  const token = $("token").value.trim();
   if (await load(token)) {
     try {
       sessionStorage.setItem(KEY, token);
@@ -162,6 +211,33 @@ login.addEventListener("submit", async (event) => {
   }
 });
 $("refresh").addEventListener("click", () => load(saved()));
+$("tg-test").addEventListener("click", async () => {
+  const out = $("tg-result");
+  const button = $("tg-test");
+  button.disabled = true;
+  out.className = "tg__result";
+  out.textContent = "Sending...";
+  try {
+    const response = await fetch("/api/stats", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${saved()}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "telegram-test" }),
+      cache: "no-store",
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || `Error ${response.status}`);
+    out.className = `tg__result ${result.ok ? "is-ok" : "is-bad"}`;
+    out.textContent = result.ok
+      ? "Delivered. Check Telegram."
+      : `Not delivered: ${result.description}. ${result.hint || ""}`;
+  } catch (error) {
+    out.className = "tg__result is-bad";
+    out.textContent = error.message;
+  } finally {
+    button.disabled = false;
+    load(saved());
+  }
+});
 $("days").addEventListener("change", () => load(saved()));
 $("logout").addEventListener("click", () => {
   try {

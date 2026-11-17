@@ -1,6 +1,6 @@
 // "My time" card: the time where I am, and how far that is from the visitor.
 
-import { $ } from "./util.js";
+import { $, ui } from "./util.js";
 
 export function initClock() {
   const clock = $("#clock");
@@ -20,7 +20,7 @@ export function initClock() {
     const there = new Date(now.toLocaleString("en-US", { timeZone }));
     const here = new Date(now.toLocaleString("en-US"));
     const delta = Math.round((there - here) / 36e5);
-    diff.textContent = delta === 0 ? "Same time as you" : `${Math.abs(delta)}h ${delta > 0 ? "ahead of" : "behind"} you`;
+    diff.textContent = delta === 0 ? ui("sameTime") : ui(delta > 0 ? "ahead" : "behind", { n: Math.abs(delta) });
   }
 
   try {

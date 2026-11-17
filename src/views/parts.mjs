@@ -2,6 +2,7 @@
 
 import { readFileSync } from "node:fs";
 import { html, raw, safeUrl, isExternal } from "../lib/html.mjs";
+import { prefix } from "../i18n/index.mjs";
 
 const images = JSON.parse(readFileSync(new URL("../data/images.json", import.meta.url), "utf8"));
 
@@ -10,8 +11,29 @@ const images = JSON.parse(readFileSync(new URL("../data/images.json", import.met
 let base = "";
 export const setBase = (value) => (base = value.replace(/\/+$/, ""));
 
-/** Prefix a site path with the base path. External URLs pass through. */
-export const u = (path) => (String(path).startsWith("/") ? base + path : path);
+/**
+ * A page of the site, as opposed to a file: no extension, and not one of the
+ * folders that hold files or server routes. "/talks/" is a page,
+ * "/talks/slides/x/01-960.webp" and "/resume/cv.pdf" are files.
+ */
+export const isPage = (path) => {
+  const bare = String(path).split(/[?#]/)[0];
+  return !/\.[a-z0-9]+$/i.test(bare) && !/^\/(assets|talks\/slides|stats|api|qr|fonts|thumbs)(\/|$)/.test(bare);
+};
+
+/**
+ * Prefix a site path with the base path, and a page with the current
+ * language ("/talks/" becomes "/fr/talks/" on French pages). External URLs
+ * pass through.
+ */
+export const u = (path) => {
+  const value = String(path);
+  if (!value.startsWith("/")) return path;
+  return base + (isPage(value) ? prefix() : "") + value;
+};
+
+/** A file or folder path with the base path only, never a language prefix. */
+export const file = (path) => (String(path).startsWith("/") ? base + path : path);
 
 /** Attributes for a link: new tab and no opener for anything off-site. */
 export function linkAttrs(href) {
